@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, StreetDroidActivity!</string>
+    <string name="app_name">StreetDroid</string>
+    <string name="vote_up">+</string>
+	<string name="vote_down">-</string>
+	<string name="page_view_title">View Page</string>
+        
+</resources>
