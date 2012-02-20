@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
@@ -32,10 +33,10 @@ public class TopicFormatter {
 		return stringBuilder.toString();
 	}
 
-	private String getTemplate() {
+	private String getTemplate(final String fileName) {
 		if (m_template.length() == 0) {
 			try {
-				m_template = readString(m_context.getAssets().open("topic.html"));
+				m_template = readString(m_context.getAssets().open(fileName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -45,9 +46,19 @@ public class TopicFormatter {
 	}
 
 	public String format(ITopic topic) {
-		String template = getTemplate();
+		String template = getTemplate("topic.html");
 		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
 		final String htmlText = tmpl.execute(topic);
+		return htmlText;
+	}
+
+	public String formatTopicList(final ITopic[] topicList) {
+		String template = getTemplate("topicList.html");
+		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
+		final String htmlText = tmpl.execute(new Object() {
+		    @SuppressWarnings("unused")
+			Object topics = Arrays.asList(topicList);
+		});
 		return htmlText;
 	}
 }

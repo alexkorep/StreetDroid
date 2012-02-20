@@ -1,11 +1,16 @@
 package org.levasoft.streetdroid;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class TopicListActivity extends Activity {
+public class TopicListActivity extends Activity implements ITopicListDownloadCallback {
 	//http://mnmlist.ru/rss/index/
 	/**
 	 * Web view behavior class
@@ -39,20 +44,36 @@ public class TopicListActivity extends Activity {
         webview.setWebViewClient(new TopicWebViewClient());
         webview.getSettings().setBuiltInZoomControls(true);
         
+        PreferencesProvider.INSTANCE.SetContext(this);
+
         // Load topic data
         //
-        
-        ITopic[] topics = m_dataProvider.getTopicList();
+        ITopic[] topics = m_dataProvider.getTopicList(this);
         showTopics(topics);
     }
-    
-    private void showTopics(ITopic[] topics) {
-        //final String topicText = m_formatter.format(topics);
-        //webview.loadData(topicText, "text/html", "UTF-8");
+
+	private void showTopics(ITopic[] topics) {
+        final String topicListText = m_formatter.formatTopicList(topics);
+        webview.loadData(topicListText, "text/html", "UTF-8");
 	}
 
-	public void onTopicDownloadComplete(ITopic topic) {
-		//showTopic(topic);
-	}	
-	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, 0, 0, "Настройки");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                startActivity(new Intent(this, StreetDroidPreferenceActivity.class));
+                return true;
+        }
+        return false;
+    }
+
+	public void onTopicListDownloadComplete(ITopic[] topics) {
+        showTopics(topics);
+	}
 }

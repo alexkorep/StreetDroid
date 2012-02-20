@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory 
+        android:title="Сайт"
+        android:key="website_url_category">
+
+        <EditTextPreference
+            android:key="website_url"
+            android:title="Адрес сайта" 
+            android:summary="Укажите адрес сайта без http, например livestreet.ru"
+            
+            android:dialogTitle="Сайт"
+            android:dialogMessage="Укажите адрес сайта без http, например livestreet.ru"    
+            android:defaultValue="livestreet.ru" />
+
+    </PreferenceCategory>
+    
+</PreferenceScreen>

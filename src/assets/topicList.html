@@ -1,0 +1,17 @@
+﻿<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="topic.css" />
+	</head>
+	<body>
+	{{#topics}}
+		<div class="topic">
+			<h1 class="title">{{title}}</h1>
+			<a href="{{blogUrl}}">{{blog}}</a>
+			<hr/>
+			<div class="content">{{content}}</div>
+			<div><small>{{author}}</small></div>
+		</div>
+	{{/topics}}
+	</body>
+</html>

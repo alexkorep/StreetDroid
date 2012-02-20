@@ -79,19 +79,11 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 	
 	@Override
 	protected void onPostExecute(String result) {
-		onDownloadComplete();
+		m_dataProvider.onDownloadComplete(m_topic);
 	}	
 
 	@Override
 	 protected void onProgressUpdate(Integer... progress) {
-		onDownloadProgress(progress[0]);
+		//onDownloadProgress(progress[0]);
      }
-
-	private void onDownloadProgress(Integer integer) {
-				
-	}
-
-	private void onDownloadComplete() {
-		m_dataProvider.onDownloadComplete(m_topic);
-	}
 }

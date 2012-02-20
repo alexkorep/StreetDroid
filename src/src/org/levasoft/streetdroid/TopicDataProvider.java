@@ -68,4 +68,15 @@ public class TopicDataProvider {
 		}
 		return topics;
 	}
+
+
+	public void onTopicListDownloadComplete(Topic[] topics) {
+		m_topics.clear();
+		for (int i = 0; i < topics.length; ++i) {
+			Topic topic = topics[i];
+			m_topics.put(topic.getTopicId(), topic);
+		}
+		
+		m_topicListDownloadCallback.onTopicListDownloadComplete(getTopicList());
+	}
 }

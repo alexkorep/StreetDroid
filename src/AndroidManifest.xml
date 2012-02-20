@@ -24,6 +24,10 @@
             android:label="@string/app_name"
             android:name=".TopicActivity" >
         </activity>
+        <activity
+            android:label="@string/app_name"
+            android:name=".StreetDroidPreferenceActivity" >
+        </activity>
         </application>
 
 </manifest>
