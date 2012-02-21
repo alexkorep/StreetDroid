@@ -14,22 +14,18 @@ class TopicStatus {
 public class Topic implements ITopic {
 	private String m_title = "Topic title";
 	private String m_author = "Topic author";
-	private String m_blog = "Blog name";
+	private String m_blog = "Blog name placeholder";
 	private String m_blogUrl = "http://google.com";
 	private String m_content = "Topic text comes here.";
 	private TopicStatus m_status = TopicStatus.STATUS_INITIAL;
-	private final int m_topicId;
+	private final String m_topicUrl;
 	
-	public Topic(int topicId) {
-		m_topicId = topicId;
+	public Topic(String topicUrl) {
+		m_topicUrl  = topicUrl;
 	}
 
 	public String getTitle() {
 		return m_title;
-	}
-
-	public String getAuthor() {
-		return m_author;
 	}
 
 	public String getBlog() {
@@ -44,6 +40,10 @@ public class Topic implements ITopic {
 		return m_content;
 	}
 
+	public String getAuthor() {
+		return m_author;
+	}
+
 	public TopicStatus getStatus() {
 		return m_status;
 	}
@@ -56,12 +56,20 @@ public class Topic implements ITopic {
 		m_content = content;
 	}
 
-	public int getTopicId() {
-		return m_topicId;
+	public void setAuthor(String author) {
+		m_author = author;
+	}
+
+	public String getTopicUrl() {
+		return m_topicUrl;
 	}
 
 	public void setStatus(TopicStatus status) {
 		m_status = status;
 	}
 
+	public void setBlog(String blog, String blogUrl) {
+		m_blog = blog;
+		m_blogUrl = blogUrl;
+	}
 }

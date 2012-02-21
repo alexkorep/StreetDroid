@@ -1,5 +1,7 @@
 package org.levasoft.streetdroid;
 
+import java.net.URLEncoder;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
@@ -17,10 +19,9 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
         }
     }
 
-	static final String BUNDLE_VAR_TOPIC_ID = "topic_id";
+	static final String BUNDLE_VAR_TOPIC_URL = "topic_url";
 	
 	WebView webview = null;
-	private TopicDataProvider m_dataProvider = null;
 	private TopicFormatter m_formatter = null; 
 	
     /** 
@@ -31,7 +32,6 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        m_dataProvider = new TopicDataProvider();
         m_formatter = new TopicFormatter(this);
 
         // Configure webview
@@ -43,16 +43,19 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
         // Load topic data
         //
         
-        //Bundle bun = getIntent().getExtras();
-        // assert bun != null;
-		final int topicId = 358; //bun.getInt(BUNDLE_VAR_TOPIC_ID, 0);
-        ITopic topic = m_dataProvider.getFullTopic(topicId, this);
+        Bundle bun = getIntent().getExtras();
+        assert bun != null;
+		final String topicUrl = bun.getString(BUNDLE_VAR_TOPIC_URL);
+        ITopic topic = TopicDataProvider.INSTANCE.getFullTopic(topicUrl, this);
         showTopic(topic);
     }
     
     private void showTopic(ITopic topic) {
         final String topicText = m_formatter.format(topic);
-        webview.loadData(topicText, "text/html", "UTF-8");
+        //final String textEncoded = URLEncoder.encode(topicText).replaceAll("\\+"," ");
+        final String textEncoded = topicText;
+        //webview.loadData(textEncoded, "text/html", "UTF-8");
+        webview.loadDataWithBaseURL("file:///android_asset/", textEncoded, "text/html", "UTF-8", null);
 	}
 
 	public void onTopicDownloadComplete(ITopic topic) {

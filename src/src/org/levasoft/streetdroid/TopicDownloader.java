@@ -20,8 +20,8 @@ import android.os.AsyncTask;
 
 public class TopicDownloader extends AsyncTask<String, Integer, String> {
 
-	private static final String TOPIC_URL = "http://%s/blog/%d.html";
-	private static final String SITE_URL = "mnmlist.ru";
+	//private static final String TOPIC_URL = "http://%s/%s";
+	//private static final String SITE_URL = "mnmlist.ru";
 
 	private final TopicDataProvider m_dataProvider;
 	private Topic m_topic;
@@ -30,10 +30,10 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		m_dataProvider = dataProvider;
 	}
 
-	public void download(int topicId) {
-		m_topic = new Topic(topicId);
-		String url = String.format(TOPIC_URL, SITE_URL , topicId);
-		execute(url);
+	public void download(String  topicUrl) {
+		m_topic = new Topic(topicUrl);
+		//String url = String.format(TOPIC_URL, SITE_URL , topicUrl);
+		execute(topicUrl);
 	}
 
 	@Override
@@ -44,29 +44,24 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 
 			TagNode node = cleaner.clean(new URL(arg0[0]));
 			
-			TagNode[] topicNodes = node.getElementsByAttValue("class", "topic", true, false);
-			if (null == topicNodes || null == topicNodes[0]) {
-				//throw new ParseExce
-				// ToDo Throw parse exception
-				return null;
+			TagNode topicNode = getSingleElement(node, "topic");
+			if (topicNode == null) {
+				// Throw some error
+				return "Error loading topic (invalid formatting?)";
 			}
-			TagNode topicNode = topicNodes[0];
 			
-			TagNode[] titleNodes = topicNode.getElementsByAttValue("class", "title", true, false);
-			if (null == titleNodes || null == titleNodes[0]) {
-				return null;
+			TagNode titleNode = getSingleElement(topicNode, "title");
+			if (null != titleNode) {
+				String title = titleNode.getText().toString();
+				m_topic.setTitle(title);
 			}
-			String title = titleNodes[0].getText().toString();
-			m_topic.setTitle(title);
 			
-			TagNode[] contentNodes = topicNode.getElementsByAttValue("class", "content", true, false);
-			if (null == contentNodes || null == contentNodes[0]) {
-				return null;
+			
+			TagNode contentNode = getSingleElement(topicNode, "content"); 
+			if (null != contentNode) {
+				String content = serializer.getAsString(contentNode, "UTF-8", true);
+				m_topic.setContent(content);
 			}
-			//String content = contentNodes[0].getText().toString();
-			
-			String content = serializer.getAsString(contentNodes[0], "UTF-8", true);
-			m_topic.setContent(content);
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -77,6 +72,17 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
         return null;
     }
 	
+	private TagNode getSingleElement(TagNode node, String elementClass) {
+		TagNode[] nodes = node.getElementsByAttValue("class", elementClass, true, false);
+		if (null == nodes || nodes.length == 0 || null == nodes[0]) {
+			//throw new ParseExce
+			// ToDo Throw parse exception
+			return null;
+		}
+		TagNode resultNode = nodes[0];
+		return resultNode;
+	}
+
 	@Override
 	protected void onPostExecute(String result) {
 		m_dataProvider.onDownloadComplete(m_topic);

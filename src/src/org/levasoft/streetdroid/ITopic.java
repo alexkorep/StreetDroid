@@ -1,7 +1,6 @@
 package org.levasoft.streetdroid;
 
 public interface ITopic {
-
 	String getTitle();
 
 	String getAuthor();
@@ -11,5 +10,4 @@ public interface ITopic {
 	String getBlogUrl();
 
 	String getContent();
-
 }

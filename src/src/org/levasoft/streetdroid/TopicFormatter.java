@@ -34,12 +34,10 @@ public class TopicFormatter {
 	}
 
 	private String getTemplate(final String fileName) {
-		if (m_template.length() == 0) {
-			try {
-				m_template = readString(m_context.getAssets().open(fileName));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			m_template = readString(m_context.getAssets().open(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		return m_template;
