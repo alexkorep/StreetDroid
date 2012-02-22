@@ -52,10 +52,7 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
     
     private void showTopic(ITopic topic) {
         final String topicText = m_formatter.format(topic);
-        //final String textEncoded = URLEncoder.encode(topicText).replaceAll("\\+"," ");
-        final String textEncoded = topicText;
-        //webview.loadData(textEncoded, "text/html", "UTF-8");
-        webview.loadDataWithBaseURL("file:///android_asset/", textEncoded, "text/html", "UTF-8", null);
+        webview.loadDataWithBaseURL("file:///android_asset/", topicText, "text/html", "UTF-8", null);
 	}
 
 	public void onTopicDownloadComplete(ITopic topic) {

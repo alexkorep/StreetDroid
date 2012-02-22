@@ -10,4 +10,6 @@ public interface ITopic {
 	String getBlogUrl();
 
 	String getContent();
+	
+	IComment[] getComments();
 }

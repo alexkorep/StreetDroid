@@ -61,9 +61,7 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
 
 	private void showTopics(ITopic[] topics) {
         final String topicListText = m_formatter.formatTopicList(topics);
-        //final String textEncoded = URLEncoder.encode(topicListText).replaceAll("\\+"," ");
-        final String textEncoded = topicListText;
-        webview.loadDataWithBaseURL("file:///android_asset/", textEncoded, "text/html", "UTF-8", null);
+        webview.loadDataWithBaseURL("file:///android_asset/", topicListText, "text/html", "UTF-8", null);
 	}
 
     @Override

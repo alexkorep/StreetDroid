@@ -62,6 +62,8 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 				String content = serializer.getAsString(contentNode, "UTF-8", true);
 				m_topic.setContent(content);
 			}
+			
+			parseComments(node, serializer);
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -72,6 +74,68 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
         return null;
     }
 	
+	/**
+	 * Parses comments from DOM
+	 * @param node in, root document node
+	 * @param serializer in, serializer, needs for comment text formatting.
+	 */
+	private void parseComments(TagNode node, SimpleHtmlSerializer serializer) {
+		// Find comments section
+		//
+		TagNode commentsNode = getSingleElement(node, "comments");
+		if (commentsNode == null) {
+			// Throw some error
+			// Error loading comments (invalid formatting?)
+		}
+
+		// Gets list of comment tags
+		// TODO check if it loads comments from all levels or from top one
+		TagNode[] nodes = node.getElementsByAttValue("class", "comment", true, false);
+		
+		if (nodes == null) {
+			// no comments for this topic?
+			return;
+		}
+
+		
+		// TODO use dynamic container. Not all nodes will contain actual comment.
+		IComment[] comments = new IComment[nodes.length];
+		for (int i = 0; i < nodes.length; ++i) {
+			TagNode commentNode = nodes[i];
+			if (commentNode == null) {
+				continue;
+			}
+			
+			final String commentId = commentNode.getAttributeByName("id");
+			if (commentId == null) {
+				continue;
+			}
+			
+			Comment comment = new Comment(commentId);
+			
+			TagNode authorNode = getSingleElement(commentNode, "author");
+			if (null != authorNode) {
+				final String author = authorNode.getText().toString();
+				comment.setAuthor(author);
+			}
+			
+			
+			TagNode textNode = getSingleElement(commentNode, "text"); 
+			if (null != textNode) {
+				String text = "";
+				try {
+					text = serializer.getAsString(textNode, "UTF-8", true);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				comment.setText(text);
+			}
+			
+			comments[i] = comment;
+		}
+		m_topic.setComments(comments);
+	}
+
 	private TagNode getSingleElement(TagNode node, String elementClass) {
 		TagNode[] nodes = node.getElementsByAttValue("class", elementClass, true, false);
 		if (null == nodes || nodes.length == 0 || null == nodes[0]) {
