@@ -1,19 +1,21 @@
 package org.levasoft.streetdroid.rss;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Message implements Comparable<Message>{
 	static SimpleDateFormat FORMATTER = 
-		new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+		new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", new Locale("en"));
+	static SimpleDateFormat RU_FORMATTER = 
+			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
+
 	private String title = "";
 	private String link = "";
 	private String description = "";
 	private String creator = "";
-	private Date date;
+	private String date;
 
 	public String getTitle() {
 		return title;
@@ -40,21 +42,21 @@ public class Message implements Comparable<Message>{
 	}
 
 	public String getDate() {
-		return FORMATTER.format(this.date);
+		return this.date;
 	}
 
 	public void setDate(String date) {
-		/*
 		// pad the date if necessary
 		while (!date.endsWith("00")){
 			date += "0";
 		}
 		try {
-			this.date = FORMATTER.parse(date.trim());
+			Date thedate = FORMATTER.parse(date.trim());
+			this.date = RU_FORMATTER.format(thedate);
 		} catch (ParseException e) {
-			throw new RuntimeException(e);
+			//
+			this.date = date;
 		}
-		*/
 	}
 	
 	public String getCreator() {

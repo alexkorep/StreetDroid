@@ -1,0 +1,19 @@
+body { 
+	margin-bottom: 50px; 
+}
+
+.comment {
+	margin-bottom: 16px;
+	margin-left: 176px;
+}
+
+.level_0 { margin-left: 0px; }
+.level_1 { margin-left: 16px; }
+.level_2 { margin-left: 32px; }
+.level_3 { margin-left: 48px; }
+.level_4 { margin-left: 64px; }
+.level_5 { margin-left: 80px; }
+.level_6 { margin-left: 96px; }
+.level_7 { margin-left: 128px; }
+.level_8 { margin-left: 144px; }
+.level_9 { margin-left: 160px; }

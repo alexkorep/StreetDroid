@@ -8,16 +8,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class TopicActivity extends Activity implements ITopicDownloadCallback {
-	/**
-	 * Web view behavior class
-	 */
-	class TopicWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    }
 
 	static final String BUNDLE_VAR_TOPIC_URL = "topic_url";
 	
@@ -37,7 +27,6 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
         // Configure webview
         webview = (WebView) findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
-        webview.setWebViewClient(new TopicWebViewClient());
         webview.getSettings().setBuiltInZoomControls(true);
         
         // Load topic data

@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="topic.css" />
 	<title></title>  
 </head>
 <body>
@@ -20,6 +21,17 @@
 					<div>
 						{{content}}
 					</div>
+				</div>
+
+				<div class="col_100">
+					<h2>Комментарии</h2>
+					{{#comments}}
+					<div class="comment level_{{level}}">
+						<div>{{text}}</div>
+						<div><a href="{{authorUrl}}">{{author}}</a></div>
+						<div><small>{{dateTime}}</small></div>
+					</div>
+					{{/comments}}
 				</div>
 			</div>
 		</div>
