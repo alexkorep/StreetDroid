@@ -22,9 +22,7 @@ public class TopicListDownloader
 		m_dateProvider = topicDataProvider;
 	}
 
-	public void download() {
-		// TODO pass it here, don't get from preferences
-		final String websiteUrl = PreferencesProvider.INSTANCE.getWebsiteUrl().trim();
+	public void download(String websiteUrl) {
 		String url = String.format(FEED_URL, websiteUrl);
 		execute(url);
 	}

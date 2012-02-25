@@ -22,3 +22,15 @@ body {
 	border-bottom: 1px solid #fff;
 	padding:4px;
 }
+
+.listitem .sitetitle {
+	float: left;
+}
+
+.listitem .sitesettingsbutton {
+	float: right;
+}
+
+.sitesettings {
+	display: none;
+}

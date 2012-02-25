@@ -23,7 +23,9 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
 	public static final String BUNDLE_VAR_SITE_URL = "site_url";
 
 	WebView webview = null;
-	private TopicFormatter m_formatter = null; 
+	private TopicFormatter m_formatter = null;
+
+	private String m_websiteUrl; 
 	
     /** 
      * Called when the activity is first created. 
@@ -45,6 +47,10 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
         webview.addJavascriptInterface(this, "jscontroller"); 
         
         PreferencesProvider.INSTANCE.SetContext(this);
+        
+        Bundle bun = getIntent().getExtras();
+        assert bun != null;
+		m_websiteUrl = bun.getString(BUNDLE_VAR_SITE_URL);
 
         // Load topic data
         //
@@ -52,7 +58,7 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
     }
 
 	private void loadData() {
-        ITopic[] topics = TopicDataProvider.INSTANCE.getTopicList(this);
+        ITopic[] topics = TopicDataProvider.INSTANCE.getTopicList(m_websiteUrl, this);
         showTopics(topics);
 	}
 
@@ -99,5 +105,9 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
 		intent.putExtras(bun);
 		intent.setClassName(this, TopicActivity.class.getName());
 		startActivity(intent);
+	}
+	
+	public void deleteSite(int siteId) {
+		
 	}
 }

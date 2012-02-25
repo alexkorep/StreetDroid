@@ -10,4 +10,8 @@ public class Site {
 	public String getUrl() {
 		return m_url;
 	}
+	
+	public int getId() {
+		return m_url.hashCode();
+	}
 }

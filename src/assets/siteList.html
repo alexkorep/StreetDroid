@@ -6,6 +6,13 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="topic.css" />
 	<title></title>  
+	<script>
+		function toggleSettings(siteNo) {
+			var divId = 'settings' + siteNo;
+			var style = document.getElementById(divId).style; 
+			style.display = (style.display == 'inline') ? 'none' : 'inline'; 
+		}
+	</script>
 </head>
 <body>
 	<div class="container">
@@ -15,8 +22,15 @@
 
 		<article class="hero clearfix">
 			{{#sites}}
-				<div class="listitem" onclick="jscontroller.loadSite('{{url}}');">
-					<h1>{{url}}</h1>
+				<div class="listitem">
+					<div class="sitetitle" onclick="jscontroller.loadSite('{{url}}');"><h1>{{url}}</h1></div>
+					<div onclick="toggleSettings({{id}});" class="sitesettingsbutton"><img src="img/expand.png" width="32" height="32" /></div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="sitesettings" id="settings{{id}}">
+					<h2>Настройки {{url}}</h2>
+					<input type="button" value="Удалить сайт из списка"  onclick="deleteSite({{id}});" />
+					<input type="button" value="Отмена" onclick="toggleSettings({{id}});" />
 				</div>
 			{{/sites}}
 		</article>

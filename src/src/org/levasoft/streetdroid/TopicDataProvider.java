@@ -60,7 +60,7 @@ public class TopicDataProvider {
 	}
 
 
-	public ITopic[] getTopicList(ITopicListDownloadCallback topicListDownloadCallback) {
+	public ITopic[] getTopicList(String websiteUrl, ITopicListDownloadCallback topicListDownloadCallback) {
 		m_topicListDownloadCallback = topicListDownloadCallback;
 		
 		// Let's cancel previous download
@@ -68,7 +68,7 @@ public class TopicDataProvider {
 		
 		// Start new download
 		m_topicListDownloader = new TopicListDownloader(this); 
-		m_topicListDownloader.download();
+		m_topicListDownloader.download(websiteUrl);
 		return getTopicList();
 	}
 	
