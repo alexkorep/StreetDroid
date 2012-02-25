@@ -5,27 +5,39 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="topic.css" />
+	
+	<script type="text/javascript" src="js/global/json2.js"></script>
+	<script type="text/javascript" src="js/global/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="js/global/mobilelite.js"></script>
+	<script type="text/javascript" src="js/global/global.js"></script>
+	<script type="text/javascript" src="js/progress.js"></script>
+	
 	<title></title>  
 </head>
 <body>
 	<div class="container">
 		<header class="header clearfix">
-			<div class="logo">Список статей</div>
 			<nav class="menu_main">
 			  <ul>
-			    <li onclick="jscontroller.loadList(0);"><a href="#">Хорошие</a></li>
-			    <li onclick="jscontroller.loadList(1);"><a href="#">Новые</a></li>
+			    <li><button onclick="bean.loadTopicList(0);">Хорошие</button></li>
+			    <li><button onclick="bean.loadTopicList(1);">Новые</button></li>
 			  </ul>
 			</nav>
-			
 		</header>
 
 		<article class="hero clearfix">
+			<div style="text-align: center;"><img id="animimg" style="display: none;" /></div>
 			{{#topics}}
-				<div class="listitem" onclick="jscontroller.loadTopic('{{topicUrl}}');">
+				<div class="listitem" onclick="bean.loadTopic('{{topicUrl}}');">
 					<h1>{{title}}</h1>
 					<div><small>{{author}}, {{dateTime}}</small></div>
 				</div>
+			{{/topics}}
+			
+			{{^topics}}
+				<script>
+					startProgress('animimg');
+				</script>
 			{{/topics}}
 		</article>
 	</div>

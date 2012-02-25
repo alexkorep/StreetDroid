@@ -8,7 +8,7 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
 
 	static final String BUNDLE_VAR_TOPIC_URL = "topic_url";
 	
-	WebView webview = null;
+	WebView m_webview = null;
 	private TopicFormatter m_formatter = null; 
 	
     /** 
@@ -22,9 +22,9 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
         m_formatter = new TopicFormatter(this);
 
         // Configure webview
-        webview = (WebView) findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.getSettings().setBuiltInZoomControls(true);
+        m_webview = (WebView) findViewById(R.id.webview);
+        m_webview.getSettings().setJavaScriptEnabled(true);
+        m_webview.getSettings().setBuiltInZoomControls(true);
         
         // Load topic data
         //
@@ -37,8 +37,14 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback {
     }
     
     private void showTopic(ITopic topic) {
+    	
+		final int x = m_webview.getScrollX();
+		final int y = m_webview.getScrollY();
+
         final String topicText = m_formatter.format(topic);
-        webview.loadDataWithBaseURL("file:///android_asset/", topicText, "text/html", "UTF-8", null);
+        m_webview.loadDataWithBaseURL("file:///android_asset/", topicText, "text/html", "UTF-8", null);
+        
+        m_webview.scrollTo(x, y);
 	}
 
 	public void onTopicDownloadComplete(ITopic topic) {

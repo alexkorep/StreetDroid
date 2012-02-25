@@ -1,9 +1,11 @@
 package org.levasoft.streetdroid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class PreferencesProvider {
@@ -67,8 +69,35 @@ public class PreferencesProvider {
 			}
 		}
 		
-		// TODO temporary
-		m_sites.add(new Site(getWebsiteUrl()));
+		Collections.sort(m_sites);
 	}
-	
+
+	private void saveSites() {
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(m_context);
+        Editor editor = sharedPrefs.edit();
+        editor.putInt(KEY_SITE_NUM, m_sites.size());
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			editor.putString(KEY_SITE_URL + i, site.getUrl());
+		}
+        editor.commit();
+	}
+
+	public void deleteSite(int siteId) {
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			if (site.getId() == siteId) {
+				m_sites.remove(i);
+				saveSites();
+				return;
+			}
+		}
+		
+	}
+
+	public void addSite(String siteUrl) {
+		m_sites.add(new Site(siteUrl));
+		Collections.sort(m_sites);
+		saveSites();
+	}
 }

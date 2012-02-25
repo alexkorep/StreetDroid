@@ -7,11 +7,25 @@ import org.levasoft.streetdroid.rss.Message;
 
 import android.os.AsyncTask;
 
+class TopicListType {
+	private final String m_feedUrl;
+	
+	private TopicListType(String feedUrl) {
+		m_feedUrl = feedUrl;
+	}
+	
+	public String getFeedUrl() {
+		return m_feedUrl;
+	}
+	
+	public static final TopicListType TOPIC_LIST_GOOD	= new TopicListType("http://%s/rss/index/");	// Good topics
+	public static final TopicListType TOPIC_LIST_NEW	= new TopicListType("http://%s/rss/new/");		// New Topics
+}
+
 
 public class TopicListDownloader 
 	extends AsyncTask<String, Integer, String>{
 
-	private static final String FEED_URL = "http://%s/rss/index/";
 	
 	private Topic[] m_topics = null;
 	private List<Message> m_messages = null;
@@ -22,8 +36,8 @@ public class TopicListDownloader
 		m_dateProvider = topicDataProvider;
 	}
 
-	public void download(String websiteUrl) {
-		String url = String.format(FEED_URL, websiteUrl);
+	public void download(String websiteUrl, TopicListType topicListType) {
+		String url = String.format(topicListType.getFeedUrl(), websiteUrl);
 		execute(url);
 	}
 

@@ -1,5 +1,9 @@
 package org.levasoft.streetdroid;
 
+import org.mobilelite.android.WebPage;
+import org.mobilelite.annotation.Service;
+import org.mobilelite.annotation.ServiceMethod;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class SiteListActivity extends Activity {
 	/**
@@ -18,10 +23,17 @@ public class SiteListActivity extends Activity {
             view.loadUrl(url);
             return true;
         }
+        
+        @Override  
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            //webview.loadUrl("app://data#tips");
+        }          
     }
 
-	WebView webview = null;
-	private TopicFormatter m_formatter = null; 
+	private TopicFormatter m_formatter = null;
+	private WebPage m_webPage;
+	private WebView m_webview; 
 	
     /** 
      * Called when the activity is first created. 
@@ -34,13 +46,15 @@ public class SiteListActivity extends Activity {
         m_formatter = new TopicFormatter(this);
 
         // Configure webview
-        webview = (WebView) findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.setWebViewClient(new TopicWebViewClient());
-        webview.getSettings().setBuiltInZoomControls(true);
+        m_webview = (WebView) findViewById(R.id.webview);
+        m_webview.getSettings().setJavaScriptEnabled(true);
+        m_webview.setWebViewClient(new TopicWebViewClient());
+        m_webview.getSettings().setBuiltInZoomControls(true);
         
-        // TODO create separate class to avoid possible security hole
-        webview.addJavascriptInterface(this, "jscontroller"); 
+        // addJavascriptInterface doesn't work for 2.3, 
+        // http://code.google.com/p/android/issues/detail?id=12987
+        m_webPage = new WebPage(m_webview);
+        m_webPage.definePageBean("bean", new BusinessService(this));
         
         PreferencesProvider.INSTANCE.SetContext(this);
 
@@ -55,8 +69,13 @@ public class SiteListActivity extends Activity {
 	}
 
 	private void showSites(Site[] sites) {
+		final int x = m_webview.getScrollX();
+		final int y = m_webview.getScrollY();
+		
         final String siteListText = m_formatter.formatSiteList(sites);
-        webview.loadDataWithBaseURL("file:///android_asset/", siteListText, "text/html", "UTF-8", null);
+        m_webPage.loadDataWithBaseURL("file:///android_asset/", siteListText, "text/html", "UTF-8", null);
+        
+        m_webview.scrollTo(x, y);
 	}
 
     @Override
@@ -80,20 +99,43 @@ public class SiteListActivity extends Activity {
         }
         return false;
     }
+	
+	@Service
+    private class BusinessService {
+        private SiteListActivity m_siteListActivity;
 
-	/**
-	 * Should be called from JavaScript
-	 * @param siteUrl
-	 */
-	public void loadSite(String siteUrl) {
-		Bundle bun = new Bundle();
-		bun.putString(TopicListActivity.BUNDLE_VAR_SITE_URL, siteUrl);
-		
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.putExtras(bun);
-		intent.setClassName(this, TopicListActivity.class.getName());
-		startActivity(intent);
-	}
+		public BusinessService(SiteListActivity siteListActivity) {
+			m_siteListActivity = siteListActivity;
+		}
+
+        @SuppressWarnings("unused")
+        @ServiceMethod
+    	public void loadSite(String siteUrl) {
+    		Toast.makeText(SiteListActivity.this, siteUrl, 200).show();
+
+    		Bundle bun = new Bundle();
+    		bun.putString(TopicListActivity.BUNDLE_VAR_SITE_URL, siteUrl);
+    		Intent intent = new Intent(Intent.ACTION_VIEW);
+    		intent.putExtras(bun);
+    		intent.setClassName(m_siteListActivity, TopicListActivity.class.getName());
+    		m_siteListActivity.startActivity(intent);
+        }
+
+        @SuppressWarnings("unused")
+        @ServiceMethod
+    	public void deleteSite(int siteId) {
+        	PreferencesProvider.INSTANCE.deleteSite(siteId);
+        	loadData();
+        }
+
+        @SuppressWarnings("unused")
+        @ServiceMethod
+    	public void addSite(String siteUrl) {
+        	PreferencesProvider.INSTANCE.addSite(siteUrl);
+        	loadData();
+        }
+
+	}	
 }
 
 

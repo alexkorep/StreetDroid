@@ -5,33 +5,45 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="topic.css" />
+	
+	<script type="text/javascript" src="js/global/json2.js"></script>
+	<script type="text/javascript" src="js/global/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="js/global/mobilelite.js"></script>
+	<script type="text/javascript" src="js/global/global.js"></script>
+	<script type="text/javascript" src="js/progress.js"></script>
+	
 	<title></title>  
 </head>
 <body>
 	<div class="container">
 		<div class="info">
+
+			<article class="hero clearfix">
+				<h1>{{title}}</h1>
+				<a href="{{blogUrl}}">{{blog}}</a>
+				<div style="text-align: center;"><img id="animimg" style="display: none;" /></div>
+			</article>
+			
 			<article class="article clearfix">
 				<div class="col_100">
-	
-					<h1>{{title}}</h1>
-	
-					<a href="{{blogUrl}}">{{blog}}</a>
-	
-					<hr/>
-					<div>
-						{{content}}
-					</div>
+					{{content}}
 				</div>
 
 				<div class="col_100">
 					<h2>Комментарии</h2>
 					{{#comments}}
 					<div class="comment level_{{level}}">
-						<div>{{text}}</div>
 						<div><a href="{{authorUrl}}">{{author}}</a></div>
+						<div>{{text}}</div>
 						<div><small>{{dateTime}}</small></div>
 					</div>
 					{{/comments}}
+					
+					{{^blogUrl}}
+						<script>
+							startProgress('animimg');
+						</script>
+					{{/blogUrl}}
 				</div>
 			</div>
 		</div>

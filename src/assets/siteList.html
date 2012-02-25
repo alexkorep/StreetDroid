@@ -5,12 +5,23 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="topic.css" />
+
+	<script type="text/javascript" src="js/global/json2.js"></script>
+	<script type="text/javascript" src="js/global/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="js/global/mobilelite.js"></script>
+	<script type="text/javascript" src="js/global/global.js"></script>
+
 	<title></title>  
 	<script>
 		function toggleSettings(siteNo) {
 			var divId = 'settings' + siteNo;
 			var style = document.getElementById(divId).style; 
-			style.display = (style.display == 'inline') ? 'none' : 'inline'; 
+			style.display = (style.display == 'inline') ? 'none' : 'inline';
+		}
+		
+		function addSite() {
+			var url = document.getElementById('newsite').value;
+			bean.addSite(url);
 		}
 	</script>
 </head>
@@ -23,16 +34,23 @@
 		<article class="hero clearfix">
 			{{#sites}}
 				<div class="listitem">
-					<div class="sitetitle" onclick="jscontroller.loadSite('{{url}}');"><h1>{{url}}</h1></div>
-					<div onclick="toggleSettings({{id}});" class="sitesettingsbutton"><img src="img/expand.png" width="32" height="32" /></div>
-					<div class="clearfix"></div>
-				</div>
-				<div class="sitesettings" id="settings{{id}}">
-					<h2>Настройки {{url}}</h2>
-					<input type="button" value="Удалить сайт из списка"  onclick="deleteSite({{id}});" />
-					<input type="button" value="Отмена" onclick="toggleSettings({{id}});" />
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td onclick="bean.loadSite('{{url}}');"><h1>{{url}}</h1></td>
+							<td onclick="toggleSettings({{id}});" width="32"><img src="img/expand.png" width="32" height="32" /></td>
+						</tr>
+					</table>
+					<div class="sitesettings" id="settings{{id}}">
+						<button onclick="bean.deleteSite({{id}});">Удалить сайт из списка</button>
+						<button onclick="toggleSettings({{id}});">Отмена</button>
+					</div>
 				</div>
 			{{/sites}}
+			
+			<div>
+				<input type="text" id="newsite" size="15" />
+				<button onclick="addSite();">Добавить сайт</button>
+			</div>
 		</article>
 	</div>
 </body>

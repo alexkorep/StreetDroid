@@ -60,15 +60,18 @@ public class TopicDataProvider {
 	}
 
 
-	public ITopic[] getTopicList(String websiteUrl, ITopicListDownloadCallback topicListDownloadCallback) {
+	public ITopic[] getTopicList(String websiteUrl, TopicListType topicListType, ITopicListDownloadCallback topicListDownloadCallback) {
 		m_topicListDownloadCallback = topicListDownloadCallback;
 		
 		// Let's cancel previous download
 		cancelDownload();
 		
+		// let's clear topic list
+		m_topics.clear();
+		
 		// Start new download
 		m_topicListDownloader = new TopicListDownloader(this); 
-		m_topicListDownloader.download(websiteUrl);
+		m_topicListDownloader.download(websiteUrl, topicListType);
 		return getTopicList();
 	}
 	
@@ -101,5 +104,10 @@ public class TopicDataProvider {
 		
 		m_topicListDownloadCallback.onTopicListDownloadComplete(getTopicList());
 		m_topicListDownloader = null;
+	}
+
+
+	public void clearTopicList() {
+		m_topics.clear();
 	}
 }
