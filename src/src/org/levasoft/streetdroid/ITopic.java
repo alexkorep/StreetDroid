@@ -11,5 +11,7 @@ public interface ITopic {
 
 	String getContent();
 	
+	String getDateTime();
+	
 	IComment[] getComments();
 }

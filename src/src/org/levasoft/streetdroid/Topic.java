@@ -1,5 +1,8 @@
 package org.levasoft.streetdroid;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 class TopicStatus {
 	private TopicStatus() {
@@ -11,15 +14,19 @@ class TopicStatus {
 	public static final TopicStatus STATUS_COMPLETE 	= new TopicStatus();	// Full topic download complete
 }
 
-public class Topic implements ITopic {
+public class Topic implements ITopic, Comparable<Topic> {
 	private String m_title = "Topic title";
 	private String m_author = "Topic author";
 	private String m_blog = "Blog name placeholder";
 	private String m_blogUrl = "http://google.com";
 	private String m_content = "Topic text comes here.";
+	private Date m_dateTime = new Date(1980, 01, 01);
 	private TopicStatus m_status = TopicStatus.STATUS_INITIAL;
 	private final String m_topicUrl;
 	private IComment[] m_comments = new IComment[0];
+	
+	private static SimpleDateFormat RU_FORMATTER = 
+			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
 	
 	public Topic(String topicUrl) {
 		m_topicUrl  = topicUrl;
@@ -82,5 +89,16 @@ public class Topic implements ITopic {
 		assert comments != null;
 		m_comments = comments;
 	}
-	
+
+	public String getDateTime() {
+		return RU_FORMATTER.format(m_dateTime);
+	}
+
+	public void setDateTime(Date date) {
+		m_dateTime = date;
+	}
+
+	public int compareTo(Topic another) {
+		return another.m_dateTime.compareTo(m_dateTime);
+	}
 }

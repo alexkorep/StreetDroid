@@ -1,24 +1,18 @@
 package org.levasoft.streetdroid;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
+import java.util.TreeMap;
 
-import org.htmlcleaner.CommentNode;
 import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.HtmlNode;
 import org.htmlcleaner.SimpleHtmlSerializer;
 import org.htmlcleaner.TagNode;
-import org.htmlcleaner.TagNodeVisitor;
-import org.htmlcleaner.Utils;
 import org.levasoft.streetdroid.rss.AndroidSaxFeedParser;
 import org.levasoft.streetdroid.rss.Message;
-
 
 import android.os.AsyncTask;
 
@@ -110,23 +104,37 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 
 	private void adjustCommentLevels(ArrayList<Comment> comments,
 			TagNode commentsNode) {
-		int minLevel = 1000;
+		
+		BitSet levels = new BitSet();
 		for (int i = 0; i < comments.size(); ++i) {
 			Comment comment = comments.get(i);
 			final String id = comment.getId();
 			final String commentAnchor = id.substring(id.indexOf("#comment") + 1); 
 			TagNode aNode = commentsNode.findElementByAttValue("id", commentAnchor, true, false);
-			final int level = findLevel(aNode);
-			if (minLevel > level) {
-				minLevel = level;
+			if (aNode == null ) {
+				aNode = commentsNode.findElementByAttValue("name", commentAnchor, true, false);
 			}
+			
+			final int level = findLevel(aNode);
+			levels.set(level);
 			comment.setLevel(level);
 		}
 		
 		// Adjust level to zero
+		TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
+		int levelNo = 0;
+		for (int i = 0; i < levels.size(); ++i) {
+			if (levels.get(i)) {
+				map.put(i, levelNo);
+				levelNo++;
+			}
+		}
+		
 		for (int i = 0; i < comments.size(); ++i) {
 			Comment comment = comments.get(i);
-			comment.setLevel(comment.getLevel() - minLevel);
+			final int level = comment.getLevel();
+			final int newLevel = map.get(level);
+			comment.setLevel(newLevel);
 		}
 		
 	}
@@ -135,10 +143,7 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		TagNode node = aNode;
 		int level = 0;
 		while (node != null) {
-			final String classVal = node.getAttributeByName("class"); 
-			if (classVal != null && classVal.contains("comment")) {
-				level++;
-			}
+			level++;
 			node = node.getParent();
 		}
 		return level;
@@ -176,7 +181,7 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 			
 			String description = msg.getDescription().replace("<![CDATA[", "").replace("]]>", ""); 
 			comment.setText(description);
-			comment.setDateTime(msg.getDate());
+			comment.setDateTime(msg.getDateFormatted());
 			o_comments.add(comment);
 		}
 	}

@@ -59,4 +59,14 @@ public class TopicFormatter {
 		});
 		return htmlText;
 	}
+
+	public String formatSiteList(final Site[] siteList) {
+		String template = getTemplate("siteList.html");
+		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
+		final String htmlText = tmpl.execute(new Object() {
+		    @SuppressWarnings("unused")
+			Object sites = Arrays.asList(siteList);
+		});
+		return htmlText;
+	}
 }

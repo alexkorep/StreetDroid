@@ -8,14 +8,15 @@ import java.util.Locale;
 public class Message implements Comparable<Message>{
 	static SimpleDateFormat FORMATTER = 
 		new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", new Locale("en"));
-	static SimpleDateFormat RU_FORMATTER = 
-			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
 
+	private static SimpleDateFormat RU_FORMATTER = 
+			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
+	
 	private String title = "";
 	private String link = "";
 	private String description = "";
 	private String creator = "";
-	private String date;
+	private Date date;
 
 	public String getTitle() {
 		return title;
@@ -41,8 +42,12 @@ public class Message implements Comparable<Message>{
 		this.description = description.trim();
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return this.date;
+	}
+
+	public String getDateFormatted() {
+		return RU_FORMATTER.format(this.date);
 	}
 
 	public void setDate(String date) {
@@ -52,10 +57,10 @@ public class Message implements Comparable<Message>{
 		}
 		try {
 			Date thedate = FORMATTER.parse(date.trim());
-			this.date = RU_FORMATTER.format(thedate);
+			this.date = thedate;
 		} catch (ParseException e) {
-			//
-			this.date = date;
+			// Error parsing date
+			this.date = new Date(1980, 01, 01);
 		}
 	}
 	
@@ -144,7 +149,8 @@ public class Message implements Comparable<Message>{
 	public int compareTo(Message another) {
 		if (another == null) return 1;
 		// sort descending, most recent first
-		return another.date.compareTo(date);
+		//return another.date.compareTo(date);
+		return another.title.compareTo(title);
 	}
 
 }

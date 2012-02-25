@@ -10,16 +10,15 @@
 <body>
 	<div class="container">
 		<header class="header clearfix">
-			<div class="logo">Список статей</div>
+			<div class="logo">Список сайтов</div>
 		</header>
 
 		<article class="hero clearfix">
-			{{#topics}}
-				<div class="listitem" onclick="jscontroller.loadTopic('{{topicUrl}}');">
-					<h1>{{title}}</h1>
-					<div><small>{{author}}, {{dateTime}}</small></div>
+			{{#sites}}
+				<div class="listitem" onclick="jscontroller.loadSite('{{url}}');">
+					<h1>{{url}}</h1>
 				</div>
-			{{/topics}}
+			{{/sites}}
 		</article>
 	</div>
 </body>

@@ -21,4 +21,12 @@ public class PreferencesProvider {
 		final String websiteUrl = sharedPrefs.getString("website_url", "livestreet.ru");
 		return websiteUrl;
 	}
+	
+	public Site[] getSiteList() {
+		// TODO temporary
+		Site sites[] = new Site[1];
+		sites[0] = new Site(getWebsiteUrl());
+		return sites;
+	}
+	
 }

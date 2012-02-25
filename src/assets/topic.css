@@ -17,3 +17,8 @@ body {
 .level_7 { margin-left: 128px; }
 .level_8 { margin-left: 144px; }
 .level_9 { margin-left: 160px; }
+
+.listitem {
+	border-bottom: 1px solid #fff;
+	padding:4px;
+}

@@ -1,11 +1,8 @@
 package org.levasoft.streetdroid;
 
-import java.net.URLEncoder;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 public class TopicActivity extends Activity implements ITopicDownloadCallback {
 

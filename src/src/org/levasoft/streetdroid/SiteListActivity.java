@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class TopicListActivity extends Activity implements ITopicListDownloadCallback {
+public class SiteListActivity extends Activity {
 	/**
 	 * Web view behavior class
 	 */
@@ -19,8 +19,6 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
             return true;
         }
     }
-
-	public static final String BUNDLE_VAR_SITE_URL = "site_url";
 
 	WebView webview = null;
 	private TopicFormatter m_formatter = null; 
@@ -52,13 +50,13 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
     }
 
 	private void loadData() {
-        ITopic[] topics = TopicDataProvider.INSTANCE.getTopicList(this);
-        showTopics(topics);
+        Site[] sites = PreferencesProvider.INSTANCE.getSiteList();
+        showSites(sites);
 	}
 
-	private void showTopics(ITopic[] topics) {
-        final String topicListText = m_formatter.formatTopicList(topics);
-        webview.loadDataWithBaseURL("file:///android_asset/", topicListText, "text/html", "UTF-8", null);
+	private void showSites(Site[] sites) {
+        final String siteListText = m_formatter.formatSiteList(sites);
+        webview.loadDataWithBaseURL("file:///android_asset/", siteListText, "text/html", "UTF-8", null);
 	}
 
     @Override
@@ -83,21 +81,19 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
         return false;
     }
 
-	public void onTopicListDownloadComplete(ITopic[] topics) {
-        showTopics(topics);
-	}
-	
 	/**
 	 * Should be called from JavaScript
-	 * @param topicUrl
+	 * @param siteUrl
 	 */
-	public void loadTopic(String topicUrl) {
+	public void loadSite(String siteUrl) {
 		Bundle bun = new Bundle();
-		bun.putString(TopicActivity.BUNDLE_VAR_TOPIC_URL, topicUrl);
+		bun.putString(TopicListActivity.BUNDLE_VAR_SITE_URL, siteUrl);
 		
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.putExtras(bun);
-		intent.setClassName(this, TopicActivity.class.getName());
+		intent.setClassName(this, TopicListActivity.class.getName());
 		startActivity(intent);
 	}
 }
+
+

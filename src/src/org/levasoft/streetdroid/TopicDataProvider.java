@@ -1,9 +1,9 @@
 package org.levasoft.streetdroid;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 interface ITopicDownloadCallback {
 	void onTopicDownloadComplete(ITopic topic);
@@ -82,12 +82,13 @@ public class TopicDataProvider {
 
 
 	private ITopic[] getTopicList() {
-		ITopic[] topics = new ITopic[m_topics.size()];
-		int i = 0;
+		ArrayList<Topic> topics = new ArrayList<Topic>();
 		for (Map.Entry<String, Topic> entry : m_topics.entrySet()) {
-		    topics[i++] = entry.getValue();
+			topics.add(entry.getValue());
 		}
-		return topics;
+		
+		Collections.sort(topics);
+		return topics.toArray(new ITopic[0]);
 	}
 
 
