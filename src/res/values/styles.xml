@@ -1,0 +1,34 @@
+<resources>
+
+    <style name="StreetDroidTheme" parent="@android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textViewStyle">@style/StreetDroidTextAppearance</item>
+        <item name="android:windowTitleStyle">@style/StreetDroidTitleAppearance</item>
+        <item name="android:buttonStyle">@style/StreetDroidButtonAppearance</item>
+        <item name="android:windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="StreetDroidTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FF464646</item>
+    </style>
+        
+    <style name="StreetDroidTitleAppearance" parent="@android:style/TextAppearance">
+        <item name="android:singleLine">true</item>
+        <item name="android:shadowColor">#BB000000</item>
+        <item name="android:shadowRadius">2.75</item>
+        <item name="android:textColor">#FFF6F6F6</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+        
+    <style name="StreetDroidButtonAppearance" parent="@android:style/Widget.Button">
+        <item name="android:textColor">#FF464646</item>
+    </style>
+        
+    <style name="WindowTitleBackground">
+        <item name="android:background">@drawable/title_text_bg</item>
+        <item name="android:paddingLeft">4dip</item>
+    </style>
+
+</resources>

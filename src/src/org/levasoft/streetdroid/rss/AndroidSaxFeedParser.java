@@ -10,8 +10,9 @@ import android.sax.RootElement;
 import android.util.Xml;
 
 public class AndroidSaxFeedParser extends BaseFeedParser {
-
 	static final String RSS = "rss";
+	private String m_siteTitle = "";
+	
 	public AndroidSaxFeedParser(String feedUrl) {
 		super(feedUrl);
 	}
@@ -21,6 +22,12 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
 		RootElement root = new RootElement(RSS);
 		final List<Message> messages = new ArrayList<Message>();
 		Element channel = root.getChild(CHANNEL);
+		channel.getChild(TITLE).setEndTextElementListener(new EndTextElementListener(){
+			public void end(String body) {
+				m_siteTitle = body;
+			}
+		});
+		
 		Element item = channel.getChild(ITEM);
 		item.setEndElementListener(new EndElementListener(){
 			public void end() {
@@ -58,5 +65,9 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
 			throw new RuntimeException(e);
 		}
 		return messages;
+	}
+
+	public String getSiteTitle() {
+		return m_siteTitle;
 	}
 }

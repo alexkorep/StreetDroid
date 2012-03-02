@@ -101,4 +101,9 @@ public class Topic implements ITopic, Comparable<Topic> {
 	public int compareTo(Topic another) {
 		return another.m_dateTime.compareTo(m_dateTime);
 	}
+
+	@Override
+	public boolean getDownloadComplete() {
+		return m_status == TopicStatus.STATUS_COMPLETE;
+	}
 }

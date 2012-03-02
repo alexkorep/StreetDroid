@@ -31,12 +31,14 @@ public class TopicListDownloader
 	private List<Message> m_messages = null;
 
 	private final TopicDataProvider m_dateProvider;
+	private String m_websiteUrl = "";
 
 	public TopicListDownloader(TopicDataProvider topicDataProvider) {
 		m_dateProvider = topicDataProvider;
 	}
 
 	public void download(String websiteUrl, TopicListType topicListType) {
+		m_websiteUrl  = websiteUrl;
 		String url = String.format(topicListType.getFeedUrl(), websiteUrl);
 		execute(url);
 	}
@@ -71,6 +73,10 @@ public class TopicListDownloader
 			topic.setBlog("", "");
 			m_topics[i] = topic;
 		}
+		
+		final String siteTitle  = parser.getSiteTitle();
+		PreferencesProvider.INSTANCE.SetSiteTitle(m_websiteUrl, siteTitle);
+
 		return null;
 	}
 

@@ -26,18 +26,18 @@
 		</header>
 
 		<article class="hero clearfix">
-			<div style="text-align: center;"><img id="animimg" style="display: none;" /></div>
+			{{^topics}}
+				<div style="text-align: center;"><img id="animimg" /></div>
+				<script>
+					startProgress('animimg');
+				</script>
+			{{/topics}}
+			
 			{{#topics}}
 				<div class="listitem" onclick="bean.loadTopic('{{topicUrl}}');">
 					<h1>{{title}}</h1>
 					<div><small>{{author}}, {{dateTime}}</small></div>
 				</div>
-			{{/topics}}
-			
-			{{^topics}}
-				<script>
-					startProgress('animimg');
-				</script>
 			{{/topics}}
 		</article>
 	</div>

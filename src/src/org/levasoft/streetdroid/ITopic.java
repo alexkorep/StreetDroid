@@ -14,4 +14,6 @@ public interface ITopic {
 	String getDateTime();
 	
 	IComment[] getComments();
+	
+	boolean getDownloadComplete();
 }

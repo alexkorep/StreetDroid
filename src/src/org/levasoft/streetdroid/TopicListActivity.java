@@ -13,6 +13,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class TopicListActivity extends Activity implements ITopicListDownloadCallback {
+	public interface OnViewTopicListActionListener {
+		public void onViewTopicListAction(String siteUrl);
+	}
+
 	/**
 	 * Web view behavior class
 	 */
@@ -80,8 +84,7 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, 0, "Настройки");
-        menu.add(Menu.NONE, 1, 1, "Обновить");
+        menu.add(Menu.NONE, 0, 0, "Обновить");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -89,10 +92,6 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0: {
-                startActivity(new Intent(this, StreetDroidPreferenceActivity.class));
-                return true;
-            }
-            case 1: {
             	loadData();
                 return true;
             }

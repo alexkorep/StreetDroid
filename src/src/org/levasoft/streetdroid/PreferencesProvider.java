@@ -11,6 +11,9 @@ import android.preference.PreferenceManager;
 public class PreferencesProvider {
 	private static final String KEY_SITE_NUM = "site_num";
 	private static final String KEY_SITE_URL = "site_url";
+	private static final String KEY_SITE_TITLE = "site_title";
+	private static final String KEY_SITE_USERNAME = "site_username";
+	private static final String KEY_SITE_PASSWORD = "site_password";
 
 	public static PreferencesProvider INSTANCE = new PreferencesProvider();
 	
@@ -29,7 +32,8 @@ public class PreferencesProvider {
 			"babiki.ru",
 			"cs-force.ru",
 			"burnovoding.ru",
-			"jnet.kz",			
+			"jnet.kz",
+			"dslrfilm.ru",
 	};
 	
 	private ArrayList<Site> m_sites = new ArrayList<Site>(); 
@@ -41,14 +45,10 @@ public class PreferencesProvider {
 		m_context = context;
 	}
 	
-	private String getWebsiteUrl() {
-		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(m_context);
-		final String websiteUrl = sharedPrefs.getString("website_url", "livestreet.ru");
-		return websiteUrl;
-	}
-	
 	public Site[] getSiteList() {
-		loadSites();
+		if (m_sites.size() == 0 && m_context != null) {
+			loadSites();
+		}
 		return m_sites.toArray(new Site[0]);
 	}
 
@@ -64,7 +64,11 @@ public class PreferencesProvider {
 			for (int i = 0; i < siteNum; ++i) {
 				final String websiteUrl = sharedPrefs.getString(KEY_SITE_URL + i, "");
 				if (websiteUrl.length() != 0) {
-					m_sites.add(new Site(websiteUrl));
+					Site site = new Site(websiteUrl);
+					site.setTitle(sharedPrefs.getString(KEY_SITE_TITLE + i, ""));
+					site.setUsernamePassword(sharedPrefs.getString(KEY_SITE_USERNAME + i, ""), 
+							sharedPrefs.getString(KEY_SITE_PASSWORD + i, ""));
+					m_sites.add(site);
 				}
 			}
 		}
@@ -79,6 +83,9 @@ public class PreferencesProvider {
 		for (int i = 0; i < m_sites.size(); ++i) {
 			final Site site = m_sites.get(i);
 			editor.putString(KEY_SITE_URL + i, site.getUrl());
+			editor.putString(KEY_SITE_TITLE + i, site.getTitle());
+			editor.putString(KEY_SITE_USERNAME + i, site.getUsername());
+			editor.putString(KEY_SITE_PASSWORD + i, site.getPassword());
 		}
         editor.commit();
 	}
@@ -99,5 +106,27 @@ public class PreferencesProvider {
 		m_sites.add(new Site(siteUrl));
 		Collections.sort(m_sites);
 		saveSites();
+	}
+
+	public void SetSiteTitle(String m_websiteUrl, String siteTitle) {
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			if (site.getUrl().equalsIgnoreCase(m_websiteUrl)) {
+				site.setTitle(siteTitle);
+				saveSites();
+				return;
+			}
+		}
+	}
+
+	public void setSiteUsernamePassword(int siteId, String username, String password) {
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			if (site.getId() == siteId) {
+				site.setUsernamePassword(username, password);
+				saveSites();
+				return;
+			}
+		}
 	}
 }

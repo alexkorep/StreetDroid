@@ -3,8 +3,12 @@
 
     <string name="hello">Hello World, StreetDroidActivity!</string>
     <string name="app_name">StreetDroid</string>
-    <string name="vote_up">+</string>
-	<string name="vote_down">-</string>
 	<string name="page_view_title">View Page</string>
-        
+    <string name="admob_publisher_id">a14f4a13b093ba6</string>
+    <string name="site_config_prompt">Введите имя пользователя и пароль</string>
+    <string name="site_config_dlg_ok">OK</string>
+	<string name="site_config_dlg_cancel">Отмена</string>
+	
+	 <string name="menu_popup_site_config">Настройки сайта</string>
+        	    
 </resources>
