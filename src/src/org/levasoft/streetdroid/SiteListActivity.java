@@ -1,136 +1,176 @@
-package org.levasoft.streetdroid;
-
-import org.mobilelite.android.WebPage;
-import org.mobilelite.annotation.Service;
-import org.mobilelite.annotation.ServiceMethod;
-
-import android.app.Activity;
+package org.levasoft.streetdroid;  
+  
+  
+import android.app.AlertDialog;
+import android.app.ListActivity;  
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.Bundle;  
+import android.text.method.SingleLineTransformationMethod;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
-
-public class SiteListActivity extends Activity {
-	/**
-	 * Web view behavior class
-	 */
-	private class TopicWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-        
-        @Override  
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            //webview.loadUrl("app://data#tips");
-        }          
-    }
-
-	private TopicFormatter m_formatter = null;
-	private WebPage m_webPage;
-	private WebView m_webview; 
+import android.view.View;  
+import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;  
+import android.widget.Toast;  
+  
+public class SiteListActivity extends ListActivity {  
+	private static final int ITEM_CONTEXTMENU_DELETEITEM = 2;
+	private static final int ITEM_CONTEXTMENU_SITECONFIG = 3;
 	
-    /** 
-     * Called when the activity is first created. 
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        m_formatter = new TopicFormatter(this);
-
-        // Configure webview
-        m_webview = (WebView) findViewById(R.id.webview);
-        m_webview.getSettings().setJavaScriptEnabled(true);
-        m_webview.setWebViewClient(new TopicWebViewClient());
-        m_webview.getSettings().setBuiltInZoomControls(true);
-        
-        // addJavascriptInterface doesn't work for 2.3, 
-        // http://code.google.com/p/android/issues/detail?id=12987
-        m_webPage = new WebPage(m_webview);
-        m_webPage.definePageBean("bean", new BusinessService(this));
-        
+	private SiteListAdapter m_adapter = null;
+	
+    public void onCreate(Bundle icicle) {  
+        super.onCreate(icicle);  
         PreferencesProvider.INSTANCE.SetContext(this);
-
-        // Load topic data
-        //
-        loadData();
-    }
-
-	private void loadData() {
-        Site[] sites = PreferencesProvider.INSTANCE.getSiteList();
-        showSites(sites);
-	}
-
-	private void showSites(Site[] sites) {
-		final int x = m_webview.getScrollX();
-		final int y = m_webview.getScrollY();
-		
-        final String siteListText = m_formatter.formatSiteList(sites);
-        m_webPage.loadDataWithBaseURL("file:///android_asset/", siteListText, "text/html", "UTF-8", null);
+        reloadSiteList();
         
-        m_webview.scrollTo(x, y);
+        ListView list = getListView();
+        list.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+        	 
+			@Override
+			public void onCreateContextMenu(ContextMenu conMenu, View arg1,
+					ContextMenuInfo arg2) {
+                //conMenu.setHeaderTitle("ContextMenu");
+                conMenu.add(0, ITEM_CONTEXTMENU_DELETEITEM, ITEM_CONTEXTMENU_DELETEITEM, "Удалить");
+                conMenu.add(0, ITEM_CONTEXTMENU_SITECONFIG, ITEM_CONTEXTMENU_SITECONFIG, R.string.menu_popup_site_config);
+                /* Add as many context-menu-options as you want to. */
+			}
+        });
+        //registerForContextMenu(list);
+    }  
+
+    private void reloadSiteList() {
+        m_adapter = new SiteListAdapter(this);
+        setListAdapter(m_adapter);
 	}
 
+    @Override  
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);  
+
+        Site[] sites = PreferencesProvider.INSTANCE.getSiteList();
+    	final int siteId = sites[position].getId();
+        
+		Bundle bun = new Bundle();
+		bun.putInt(TopicListActivity.BUNDLE_VAR_SITE_ID, siteId);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.putExtras(bun);
+		intent.setClassName(this, TopicListActivity.class.getName());
+		startActivity(intent);
+        
+    }  
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	if (m_adapter != null) {
+    		m_adapter.notifyDataSetChanged();
+    	}
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, 0, "Обновить");
+        menu.add(Menu.NONE, 0, 0, "Добавить");
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 0: {
-            	loadData();
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case 0: {
+				AlertDialog.Builder alert = new AlertDialog.Builder(this);
 	
-	@Service
-    private class BusinessService {
-        private SiteListActivity m_siteListActivity;
-
-		public BusinessService(SiteListActivity siteListActivity) {
-			m_siteListActivity = siteListActivity;
+				alert.setTitle("Новый сайт");
+				alert.setMessage("Укажите URL сайта без http://, например livestreet.ru");
+	
+				// Set an EditText view to get user input
+				final EditText input = new EditText(this);
+				input.setTransformationMethod(new SingleLineTransformationMethod());
+				alert.setView(input);
+	
+				alert.setPositiveButton("Добавить",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								String siteUrl = input.getText().toString();
+								PreferencesProvider.INSTANCE.addSite(siteUrl);
+								reloadSiteList();
+							}
+						});
+	
+				alert.setNegativeButton("Cancel",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// Canceled.
+							}
+						});
+	
+				alert.show();
+				return true;
+			}
 		}
+		return false;
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case ITEM_CONTEXTMENU_DELETEITEM: {
+				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();;
+				Site site = PreferencesProvider.INSTANCE.getSiteList()[info.position]; 
+				PreferencesProvider.INSTANCE.deleteSite(site.getId());
+				reloadSiteList();
+				return true;
+			}
+			case ITEM_CONTEXTMENU_SITECONFIG: {
+				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();;
+				Site site = PreferencesProvider.INSTANCE.getSiteList()[info.position]; 
+				showSiteConfigDlg(site);
+				return true;
+			}
+				
+		}
+		return false;
+	}
+	
+	public void showSiteConfigDlg(final Site site) {
+		LayoutInflater factory = LayoutInflater.from(this);
+        final View textEntryView = factory.inflate(R.layout.siteconfigdlg, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(R.string.site_config_prompt)
+            .setView(textEntryView)
+            .setPositiveButton(R.string.site_config_dlg_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                	// On OK handler
+                	//
+                    EditText edUsername = (EditText) textEntryView.findViewById(R.id.editUsername);
+                    EditText edPassword = (EditText) textEntryView.findViewById(R.id.editPassword);
+                    final String username = edUsername.getText().toString();
+                    final String password = edPassword.getText().toString();
+                    PreferencesProvider.INSTANCE.setSiteUsernamePassword(
+                    		site.getId(), username, password);
+               		m_adapter.notifyDataSetChanged();
+                }
+            })
+            .setNegativeButton(R.string.site_config_dlg_cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
 
-        @SuppressWarnings("unused")
-        @ServiceMethod
-    	public void loadSite(String siteUrl) {
-    		Toast.makeText(SiteListActivity.this, siteUrl, 200).show();
+                }
+            })
+            .create();
+        EditText edUsername = (EditText) textEntryView.findViewById(R.id.editUsername);
+        EditText edPassword = (EditText) textEntryView.findViewById(R.id.editPassword);
+        
+        edUsername.setText(site.getUsername());
+        edPassword.setText(site.getPassword());
+        dialog.show();
+	 }
 
-    		Bundle bun = new Bundle();
-    		bun.putString(TopicListActivity.BUNDLE_VAR_SITE_URL, siteUrl);
-    		Intent intent = new Intent(Intent.ACTION_VIEW);
-    		intent.putExtras(bun);
-    		intent.setClassName(m_siteListActivity, TopicListActivity.class.getName());
-    		m_siteListActivity.startActivity(intent);
-        }
-
-        @SuppressWarnings("unused")
-        @ServiceMethod
-    	public void deleteSite(int siteId) {
-        	PreferencesProvider.INSTANCE.deleteSite(siteId);
-        	loadData();
-        }
-
-        @SuppressWarnings("unused")
-        @ServiceMethod
-    	public void addSite(String siteUrl) {
-        	PreferencesProvider.INSTANCE.addSite(siteUrl);
-        	loadData();
-        }
-
-	}	
-}
-
-
+}  

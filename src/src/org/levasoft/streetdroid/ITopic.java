@@ -16,4 +16,8 @@ public interface ITopic {
 	IComment[] getComments();
 	
 	boolean getDownloadComplete();
+	
+	VotingDetails getVotingDetails();
+	
+	Site getSite();
 }

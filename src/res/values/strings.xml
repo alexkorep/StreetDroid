@@ -9,6 +9,20 @@
     <string name="site_config_dlg_ok">OK</string>
 	<string name="site_config_dlg_cancel">Отмена</string>
 	
-	 <string name="menu_popup_site_config">Настройки сайта</string>
-        	    
+	<string name="menu_popup_site_config">Настройки сайта</string>
+	
+	<string name="topic_list_login">Войти</string>
+	<string name="topic_list_refresh">Обновить</string>
+	
+	<string name="login_error">Не удалось залогиниться</string>
+	<string name="login_success">Залогинились успешно</string>
+	
+	<string name="topic_vote_up">Нравится</string>
+	<string name="topic_vote_down">Не нравится</string>
+	<string name="topic_vote_progress">Голосование</string>
+	    	
+	
+	<string name="error_voting_page_parse">Не удалось проголосовать: ошибка парсинга страницы</string>
+	<string name="error_cant_find_topic">Топик не найден</string>
+
 </resources>

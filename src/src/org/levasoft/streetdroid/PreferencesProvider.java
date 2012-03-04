@@ -109,6 +109,7 @@ public class PreferencesProvider {
 	}
 
 	public void SetSiteTitle(String m_websiteUrl, String siteTitle) {
+		// TODO use getSiteById
 		for (int i = 0; i < m_sites.size(); ++i) {
 			final Site site = m_sites.get(i);
 			if (site.getUrl().equalsIgnoreCase(m_websiteUrl)) {
@@ -120,6 +121,7 @@ public class PreferencesProvider {
 	}
 
 	public void setSiteUsernamePassword(int siteId, String username, String password) {
+		// TODO use getSiteById
 		for (int i = 0; i < m_sites.size(); ++i) {
 			final Site site = m_sites.get(i);
 			if (site.getId() == siteId) {
@@ -129,4 +131,15 @@ public class PreferencesProvider {
 			}
 		}
 	}
+
+	public Site getSiteById(int siteId) {
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			if (site.getId() == siteId) {
+				return site;
+			}
+		}
+		return null;
+	}
+
 }

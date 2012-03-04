@@ -25,11 +25,15 @@ public class Topic implements ITopic, Comparable<Topic> {
 	private final String m_topicUrl;
 	private IComment[] m_comments = new IComment[0];
 	
+	private VotingDetails m_votingDetails = new VotingDetails();
+	private final Site m_site;
+	
 	private static SimpleDateFormat RU_FORMATTER = 
 			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
 	
-	public Topic(String topicUrl) {
+	public Topic(String topicUrl, Site site) {
 		m_topicUrl  = topicUrl;
+		m_site = site;
 	}
 
 	public String getTitle() {
@@ -105,5 +109,15 @@ public class Topic implements ITopic, Comparable<Topic> {
 	@Override
 	public boolean getDownloadComplete() {
 		return m_status == TopicStatus.STATUS_COMPLETE;
+	}
+
+	@Override
+	public VotingDetails getVotingDetails() {
+		return m_votingDetails;	
+	}
+	
+	@Override
+	public Site getSite() {
+		return m_site;
 	}
 }

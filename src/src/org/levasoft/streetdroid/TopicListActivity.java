@@ -1,5 +1,7 @@
 package org.levasoft.streetdroid;
 
+import java.io.IOException;
+
 import org.mobilelite.android.WebPage;
 import org.mobilelite.annotation.Service;
 import org.mobilelite.annotation.ServiceMethod;
@@ -11,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class TopicListActivity extends Activity implements ITopicListDownloadCallback {
 	public interface OnViewTopicListActionListener {
@@ -28,15 +31,15 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
         }
     }
 
-	public static final String BUNDLE_VAR_SITE_URL = "site_url";
+	public static final String BUNDLE_VAR_SITE_ID = "site_id";
 
 	private TopicFormatter m_formatter = null;
 
-	private String m_websiteUrl;
-
 	private WebPage m_webPage;
 
-	private TopicListType m_topicListType; 
+	private TopicListType m_topicListType;
+
+	private Site m_site; 
 	
     /** 
      * Called when the activity is first created. 
@@ -61,7 +64,8 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
         
         Bundle bun = getIntent().getExtras();
         assert bun != null;
-		m_websiteUrl = bun.getString(BUNDLE_VAR_SITE_URL);
+		final int siteId = bun.getInt(BUNDLE_VAR_SITE_ID);
+		m_site = PreferencesProvider.INSTANCE.getSiteById(siteId);
 		
 		// We don't need to show topics from the previous website
 		TopicDataProvider.INSTANCE.clearTopicList();
@@ -73,7 +77,7 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
     }
 
 	private void loadData() {
-        ITopic[] topics = TopicDataProvider.INSTANCE.getTopicList(m_websiteUrl, m_topicListType, this);
+        ITopic[] topics = TopicDataProvider.INSTANCE.getTopicList(m_site, m_topicListType, this);
         showTopics(topics);
 	}
 
@@ -84,7 +88,7 @@ public class TopicListActivity extends Activity implements ITopicListDownloadCal
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, 0, "Обновить");
+        menu.add(Menu.NONE, 0, 0, R.string.topic_list_refresh);
         return super.onCreateOptionsMenu(menu);
     }
 

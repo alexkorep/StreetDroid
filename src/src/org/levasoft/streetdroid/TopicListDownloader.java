@@ -26,20 +26,20 @@ class TopicListType {
 public class TopicListDownloader 
 	extends AsyncTask<String, Integer, String>{
 
-	
 	private Topic[] m_topics = null;
 	private List<Message> m_messages = null;
 
 	private final TopicDataProvider m_dateProvider;
 	private String m_websiteUrl = "";
+	private Site m_site;
 
-	public TopicListDownloader(TopicDataProvider topicDataProvider) {
+	public TopicListDownloader(Site site, TopicDataProvider topicDataProvider) {
 		m_dateProvider = topicDataProvider;
+		m_site = site;
 	}
 
-	public void download(String websiteUrl, TopicListType topicListType) {
-		m_websiteUrl  = websiteUrl;
-		String url = String.format(topicListType.getFeedUrl(), websiteUrl);
+	public void download(TopicListType topicListType) {
+		String url = String.format(topicListType.getFeedUrl(), m_site.getUrl());
 		execute(url);
 	}
 
@@ -62,7 +62,7 @@ public class TopicListDownloader
 		
 		for (int i = 0; i < m_messages.size(); ++i) {
 			Message msg = m_messages.get(i);
-			Topic topic = new Topic(msg.getLink());
+			Topic topic = new Topic(msg.getLink(), m_site);
 			topic.setTitle(msg.getTitle());
 			topic.setAuthor(msg.getCreator());
 			topic.setDateTime(msg.getDate());

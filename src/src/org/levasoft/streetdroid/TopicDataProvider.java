@@ -30,37 +30,29 @@ public class TopicDataProvider {
 		assert topicUrl != null;
 		
 		m_topicDownloadCallback = topicDownloadCallback;
-		Topic topic = findOrCreate(topicUrl);
+		Topic topic = m_topics.get(topicUrl);
+		if (topic == null) {
+			return null;
+		}
+		
 		if (topic.getStatus() == TopicStatus.STATUS_INITIAL || 
 				topic.getStatus() == TopicStatus.STATUS_BRIEF) {
-			new TopicDownloader(this).download(topicUrl);
+			new TopicDownloader(this).download(topic.getSite(), topicUrl);
 		}
 		
 		return topic;
 	}
-
-
-	private Topic findOrCreate(String topicUrl) {
-		Topic topic = m_topics.get(topicUrl);
-		if (null == topic) {
-			topic = new Topic(topicUrl);
-			m_topics.put(topicUrl, topic);
-		}
-		return topic;
-	}
-
 
 	public void onDownloadComplete(Topic topic) {
 		// Overwrite existing topic
 		// TODO make sure it's safe
-		
 		topic.setStatus(TopicStatus.STATUS_COMPLETE);
 		m_topics.put(topic.getTopicUrl(), topic);
 		m_topicDownloadCallback.onTopicDownloadComplete(topic);
 	}
 
 
-	public ITopic[] getTopicList(String websiteUrl, TopicListType topicListType, ITopicListDownloadCallback topicListDownloadCallback) {
+	public ITopic[] getTopicList(Site site, TopicListType topicListType, ITopicListDownloadCallback topicListDownloadCallback) {
 		m_topicListDownloadCallback = topicListDownloadCallback;
 		
 		// Let's cancel previous download
@@ -70,8 +62,8 @@ public class TopicDataProvider {
 		m_topics.clear();
 		
 		// Start new download
-		m_topicListDownloader = new TopicListDownloader(this); 
-		m_topicListDownloader.download(websiteUrl, topicListType);
+		m_topicListDownloader = new TopicListDownloader(site, this); 
+		m_topicListDownloader.download(topicListType);
 		return getTopicList();
 	}
 	

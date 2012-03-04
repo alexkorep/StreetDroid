@@ -28,8 +28,8 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		m_dataProvider = dataProvider;
 	}
 
-	public void download(String  topicUrl) {
-		m_topic = new Topic(topicUrl);
+	public void download(Site site, String topicUrl) {
+		m_topic = new Topic(topicUrl, site);
 		//String url = String.format(TOPIC_URL, SITE_URL , topicUrl);
 		execute(topicUrl);
 	}
@@ -41,7 +41,10 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 			SimpleHtmlSerializer serializer = new SimpleHtmlSerializer(cleaner.getProperties());
 
 			m_filename  = arg0[0];
-			TagNode node = cleaner.clean(new URL(m_filename));
+			
+			final String page = PageDownloadManager.INSTANCE.download(m_filename);
+			//final TagNode node = cleaner.clean(new URL(m_filename));
+			final TagNode node = cleaner.clean(page);
 			
 			TagNode topicNode = getSingleElement(node, "topic");
 			if (topicNode == null) {
@@ -63,10 +66,17 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 			}
 			
 			parseComments(node, serializer);
+			
+			final String topicPageText = serializer.getAsString(node);
+			// TODO handle parsing errors
+			m_topic.getVotingDetails().parseVotingDetails(topicPageText);
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (StreetDroidException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
