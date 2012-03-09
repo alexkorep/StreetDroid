@@ -9,6 +9,9 @@
     <string name="site_config_dlg_ok">OK</string>
 	<string name="site_config_dlg_cancel">Отмена</string>
 	
+	<string name="site_list_select_list_title">Добавить сайт</string>
+	<string name="site_list_select_other">Другой...</string>
+	
 	<string name="menu_popup_site_config">Настройки сайта</string>
 	
 	<string name="topic_list_login">Войти</string>
@@ -24,5 +27,13 @@
 	
 	<string name="error_voting_page_parse">Не удалось проголосовать: ошибка парсинга страницы</string>
 	<string name="error_cant_find_topic">Топик не найден</string>
-
+	
+	<string name="site_list_title">SreetDroid</string>
+	
+	<string name="topic_list_type_good">Хорошие топики</string>
+	<string name="topic_list_type_all">Все топики</string>
+	<string name="topic_list_select_list_type">Выберите раздел</string>
+	<string name="topic_list_type">Разделы сайта</string>
+	
+	
 </resources>

@@ -1,13 +1,10 @@
 body { 
 	margin-bottom: 50px; 
+	font-size:34px;
 }
 
 button {
 	padding: 16px;
-}
-
-input {
-	font-size:21px;
 }
 
 .comment {
@@ -25,20 +22,3 @@ input {
 .level_7 { margin-left: 128px; }
 .level_8 { margin-left: 144px; }
 .level_9 { margin-left: 160px; }
-
-.listitem {
-	border-bottom: 1px solid #fff;
-	padding:4px;
-}
-
-.listitem .sitetitle {
-	float: left;
-}
-
-.listitem .sitesettingsbutton {
-	float: right;
-}
-
-.sitesettings {
-	display: none;
-}

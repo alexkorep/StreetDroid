@@ -20,6 +20,8 @@ public class TopicDataProvider {
 	private ITopicDownloadCallback m_topicDownloadCallback = null;
 	private ITopicListDownloadCallback m_topicListDownloadCallback = null;
 	private TopicListDownloader m_topicListDownloader = null;
+
+	private TopicDownloader m_topicDownloader;
 	
 	private TopicDataProvider() {
 	}
@@ -37,18 +39,31 @@ public class TopicDataProvider {
 		
 		if (topic.getStatus() == TopicStatus.STATUS_INITIAL || 
 				topic.getStatus() == TopicStatus.STATUS_BRIEF) {
-			new TopicDownloader(this).download(topic.getSite(), topicUrl);
+			
+			if (m_topicDownloader != null) {
+				m_topicDownloader.cancel(true);
+			}
+			
+			m_topicDownloader = new TopicDownloader(this);
+			m_topicDownloader.download(topic.getSite(), topicUrl);
 		}
 		
 		return topic;
 	}
 
 	public void onDownloadComplete(Topic topic) {
-		// Overwrite existing topic
-		// TODO make sure it's safe
 		topic.setStatus(TopicStatus.STATUS_COMPLETE);
-		m_topics.put(topic.getTopicUrl(), topic);
-		m_topicDownloadCallback.onTopicDownloadComplete(topic);
+		Topic completeTopic = m_topics.get(topic.getTopicUrl());
+		if (completeTopic == null) {
+			m_topics.put(topic.getTopicUrl(), topic);
+			completeTopic = topic;
+		} else {
+			completeTopic.setContent(topic.getContent());
+			completeTopic.setAuthor(topic.getAuthor());
+			completeTopic.setBlog(topic.getBlog(), topic.getBlogUrl());
+			completeTopic.setComments(topic.getComments());
+		}
+		m_topicDownloadCallback.onTopicDownloadComplete(completeTopic);
 	}
 
 

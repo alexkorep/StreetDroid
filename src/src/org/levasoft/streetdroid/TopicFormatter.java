@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
@@ -47,26 +46,6 @@ public class TopicFormatter {
 		String template = getTemplate("topic.html");
 		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
 		final String htmlText = tmpl.execute(topic);
-		return htmlText;
-	}
-
-	public String formatTopicList(final ITopic[] topicList) {
-		String template = getTemplate("topicList.html");
-		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
-		final String htmlText = tmpl.execute(new Object() {
-		    @SuppressWarnings("unused")
-			Object topics = Arrays.asList(topicList);
-		});
-		return htmlText;
-	}
-
-	public String formatSiteList(final Site[] siteList) {
-		String template = getTemplate("siteList.html");
-		Template tmpl = Mustache.compiler().escapeHTML(false).compile(template);
-		final String htmlText = tmpl.execute(new Object() {
-		    @SuppressWarnings("unused")
-			Object sites = Arrays.asList(siteList);
-		});
 		return htmlText;
 	}
 }

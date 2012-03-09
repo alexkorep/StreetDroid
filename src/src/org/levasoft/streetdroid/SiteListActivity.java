@@ -1,6 +1,8 @@
 package org.levasoft.streetdroid;  
   
   
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;  
 import android.content.DialogInterface;
@@ -17,7 +19,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;  
-import android.widget.Toast;  
   
 public class SiteListActivity extends ListActivity {  
 	private static final int ITEM_CONTEXTMENU_DELETEITEM = 2;
@@ -42,7 +43,10 @@ public class SiteListActivity extends ListActivity {
                 /* Add as many context-menu-options as you want to. */
 			}
         });
-        //registerForContextMenu(list);
+        
+        if (PreferencesProvider.INSTANCE.getSites().length == 0) {
+        	addNewSiteDialog();
+        }
     }  
 
     private void reloadSiteList() {
@@ -54,16 +58,13 @@ public class SiteListActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);  
 
-        Site[] sites = PreferencesProvider.INSTANCE.getSiteList();
-    	final int siteId = sites[position].getId();
-        
-		Bundle bun = new Bundle();
-		bun.putInt(TopicListActivity.BUNDLE_VAR_SITE_ID, siteId);
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.putExtras(bun);
-		intent.setClassName(this, TopicListActivity.class.getName());
-		startActivity(intent);
-        
+        Site site = m_adapter.getSite(position);
+        if (null == site) {
+        	// title clicked?
+        	return;
+        }
+    	final int siteId = site.getId();
+    	openSite(siteId);
     }  
     
     @Override
@@ -84,35 +85,7 @@ public class SiteListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case 0: {
-				AlertDialog.Builder alert = new AlertDialog.Builder(this);
-	
-				alert.setTitle("Новый сайт");
-				alert.setMessage("Укажите URL сайта без http://, например livestreet.ru");
-	
-				// Set an EditText view to get user input
-				final EditText input = new EditText(this);
-				input.setTransformationMethod(new SingleLineTransformationMethod());
-				alert.setView(input);
-	
-				alert.setPositiveButton("Добавить",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								String siteUrl = input.getText().toString();
-								PreferencesProvider.INSTANCE.addSite(siteUrl);
-								reloadSiteList();
-							}
-						});
-	
-				alert.setNegativeButton("Cancel",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Canceled.
-							}
-						});
-	
-				alert.show();
+				addNewSiteDialog();
 				return true;
 			}
 		}
@@ -121,17 +94,20 @@ public class SiteListActivity extends ListActivity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();;
+		final Site site = m_adapter.getSite(info.position);
+		if (null == site) {
+			// title selected
+			return false;
+		}
+		
 		switch (item.getItemId()) {
 			case ITEM_CONTEXTMENU_DELETEITEM: {
-				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();;
-				Site site = PreferencesProvider.INSTANCE.getSiteList()[info.position]; 
 				PreferencesProvider.INSTANCE.deleteSite(site.getId());
 				reloadSiteList();
 				return true;
 			}
 			case ITEM_CONTEXTMENU_SITECONFIG: {
-				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();;
-				Site site = PreferencesProvider.INSTANCE.getSiteList()[info.position]; 
 				showSiteConfigDlg(site);
 				return true;
 			}
@@ -173,4 +149,77 @@ public class SiteListActivity extends ListActivity {
         dialog.show();
 	 }
 
+	public void addNewSiteDialog() {
+		ArrayList<String> sites = new ArrayList<String>(); 
+		final String[] items = PreferencesProvider.INSTANCE.getDefaultSites();
+		for (int i = 0; i < items.length; ++i) {
+			sites.add(items[i]);
+		}
+		sites.add(getString(R.string.site_list_select_other));
+		
+		final String[] menuItems = sites.toArray(new String[0]);
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.site_list_select_list_title));
+		builder.setItems(menuItems, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int item) {
+		    	if (item == menuItems.length - 1) {
+		    		showCustomSiteDialog();
+		    	} else {
+		    		addSite(menuItems[item]);
+		    	}
+		    }
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	protected void showCustomSiteDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		
+		alert.setTitle("Новый сайт");
+		alert.setMessage("Укажите URL сайта без http://, например livestreet.ru");
+
+		// Set an EditText view to get user input
+		final EditText input = new EditText(this);
+		input.setTransformationMethod(new SingleLineTransformationMethod());
+		alert.setView(input);
+
+		alert.setPositiveButton("Добавить",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						String siteUrl = input.getText().toString();
+						addSite(siteUrl);
+					}
+				});
+
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						// Canceled.
+					}
+				});
+
+		alert.show();
+	}
+
+	protected void addSite(String siteUrl) {
+		PreferencesProvider.INSTANCE.addSite(siteUrl);
+		reloadSiteList();
+		
+		Site site = PreferencesProvider.INSTANCE.getSiteByUrl(siteUrl);
+		openSite(site.getId());
+	}
+
+	private void openSite(int siteId) {
+		Bundle bun = new Bundle();
+		bun.putInt(TopicListActivity.BUNDLE_VAR_SITE_ID, siteId);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.putExtras(bun);
+		intent.setClassName(this, TopicListActivity.class.getName());
+		startActivity(intent);
+	}
+	
 }  

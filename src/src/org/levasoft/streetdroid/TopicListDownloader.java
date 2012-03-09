@@ -30,7 +30,6 @@ public class TopicListDownloader
 	private List<Message> m_messages = null;
 
 	private final TopicDataProvider m_dateProvider;
-	private String m_websiteUrl = "";
 	private Site m_site;
 
 	public TopicListDownloader(Site site, TopicDataProvider topicDataProvider) {
@@ -75,7 +74,7 @@ public class TopicListDownloader
 		}
 		
 		final String siteTitle  = parser.getSiteTitle();
-		PreferencesProvider.INSTANCE.SetSiteTitle(m_websiteUrl, siteTitle);
+		PreferencesProvider.INSTANCE.SetSiteTitle(m_site.getUrl(), siteTitle);
 
 		return null;
 	}

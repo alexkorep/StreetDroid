@@ -20,20 +20,23 @@ public class PreferencesProvider {
 	private Context m_context;
 	
 	private String[] defaultSites = {
-			"livestreet.ru",
-			"mnmlist.ru",
-			"turometr.ru",
 			"avtoturistu.ru",
-			"haycafe.ru",
-			"luntiki.ru",
-			"nepropadu.ru",
-			"cookorama.net",
-			"debosh.net",
 			"babiki.ru",
+			"cookorama.net",
 			"cs-force.ru",
-			"burnovoding.ru",
-			"jnet.kz",
+			"debosh.net",
 			"dslrfilm.ru",
+			"freehabr.ru",
+			"jnet.kz",
+			"kachkanar.net",
+			"livestreet.ru",
+			"luntiki.ru",
+			"magov.net",
+			"mnmlist.ru",
+			"nepropadu.ru",
+			"steampunker.ru",
+			"turometr.ru",
+			"ugolock.ru",
 	};
 	
 	private ArrayList<Site> m_sites = new ArrayList<Site>(); 
@@ -45,7 +48,7 @@ public class PreferencesProvider {
 		m_context = context;
 	}
 	
-	public Site[] getSiteList() {
+	public Site[] getSites() {
 		if (m_sites.size() == 0 && m_context != null) {
 			loadSites();
 		}
@@ -56,20 +59,14 @@ public class PreferencesProvider {
 		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(m_context);
 		final int siteNum = sharedPrefs.getInt(KEY_SITE_NUM, 0);
 		m_sites.clear();
-		if (siteNum == 0) {
-			for (int i = 0; i < defaultSites.length; ++i) {
-				m_sites.add(new Site(defaultSites[i]));
-			}
-		} else {
-			for (int i = 0; i < siteNum; ++i) {
-				final String websiteUrl = sharedPrefs.getString(KEY_SITE_URL + i, "");
-				if (websiteUrl.length() != 0) {
-					Site site = new Site(websiteUrl);
-					site.setTitle(sharedPrefs.getString(KEY_SITE_TITLE + i, ""));
-					site.setUsernamePassword(sharedPrefs.getString(KEY_SITE_USERNAME + i, ""), 
-							sharedPrefs.getString(KEY_SITE_PASSWORD + i, ""));
-					m_sites.add(site);
-				}
+		for (int i = 0; i < siteNum; ++i) {
+			final String websiteUrl = sharedPrefs.getString(KEY_SITE_URL + i, "");
+			if (websiteUrl.length() != 0) {
+				Site site = new Site(websiteUrl);
+				site.setTitle(sharedPrefs.getString(KEY_SITE_TITLE + i, ""));
+				site.setUsernamePassword(sharedPrefs.getString(KEY_SITE_USERNAME + i, ""), 
+						sharedPrefs.getString(KEY_SITE_PASSWORD + i, ""));
+				m_sites.add(site);
 			}
 		}
 		
@@ -142,4 +139,17 @@ public class PreferencesProvider {
 		return null;
 	}
 
+	public String[] getDefaultSites() {
+		return defaultSites;
+	}
+
+	public Site getSiteByUrl(String siteUrl) {
+		for (int i = 0; i < m_sites.size(); ++i) {
+			final Site site = m_sites.get(i);
+			if (site.getUrl() == siteUrl) {
+				return site;
+			}
+		}
+		return null;
+	}
 }

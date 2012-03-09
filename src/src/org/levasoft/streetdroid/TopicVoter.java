@@ -2,7 +2,6 @@ package org.levasoft.streetdroid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,8 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.levasoft.streetdroid.voting.ILiveStreetVersion;
 import org.levasoft.streetdroid.voting.LiveStreetVersion35;
 import org.levasoft.streetdroid.voting.LiveStreetVersion40;

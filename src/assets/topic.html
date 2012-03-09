@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<!-- initial-scale = 0.6 gives 500px width (plus scrollbar) which is default uploaded image width in LiveStreet -->
+	<meta name="viewport" content="width=device-width; initial-scale=0.6; minimum-scale=0.1; user-scalable=1;">
+
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="topic.css" />
 	
@@ -19,14 +21,7 @@
 		<div class="info">
 
 			<article class="hero clearfix">
-				<h1>{{title}}</h1>
 				<a href="{{topicUrl}}">{{topicUrl}}</a>
-				{{^downloadComplete}}
-					<div style="text-align: center;"><img id="animimg" /></div>
-					<script>
-						startProgress('animimg');
-					</script>
-				{{/downloadComplete}}
 			</article>
 			
 			<article class="article clearfix">
@@ -35,7 +30,7 @@
 				</div>
 
 				<div class="col_100">
-					<h2>Комментарии</h2>
+					<h3>Комментарии</h3>
 					{{#comments}}
 					<div class="comment level_{{level}}">
 						<div><a href="{{authorUrl}}">{{author}}</a></div>

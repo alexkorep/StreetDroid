@@ -4,6 +4,8 @@ public interface ITopic {
 	String getTitle();
 
 	String getAuthor();
+	
+	String getTopicUrl();	
 
 	String getBlog();
 

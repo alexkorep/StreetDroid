@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="D:/Work/SDK/GoogleAdMobAdsSdkAndroid-4.3.1/GoogleAdMobAdsSdk-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
