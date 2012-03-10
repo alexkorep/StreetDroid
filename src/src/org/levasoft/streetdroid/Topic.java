@@ -3,6 +3,8 @@ package org.levasoft.streetdroid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class TopicStatus {
 	private TopicStatus() {
@@ -15,11 +17,12 @@ class TopicStatus {
 }
 
 public class Topic implements ITopic, Comparable<Topic> {
-	private String m_title = "Topic title";
-	private String m_author = "Topic author";
-	private String m_blog = "Blog name placeholder";
-	private String m_blogUrl = "http://google.com";
-	private String m_content = "Topic text comes here.";
+	private static final String REGEXP_IMAGE_URL = "<img.*src=\\\"([^\\\"]*)\\\".*>";
+	private String m_title = "";
+	private String m_author = "";
+	private String m_blog = "";
+	private String m_blogUrl = "";
+	private String m_content = "";
 	private Date m_dateTime = new Date(1980, 01, 01);
 	private TopicStatus m_status = TopicStatus.STATUS_INITIAL;
 	private final String m_topicUrl;
@@ -119,5 +122,25 @@ public class Topic implements ITopic, Comparable<Topic> {
 	@Override
 	public Site getSite() {
 		return m_site;
+	}
+
+	@Override
+	public String getFtontImageUrl() {
+		if (m_content.length() == 0) {
+			return "";
+		}
+		
+		// TODO move all this into separate class
+		//
+		Pattern pattern = Pattern.compile(REGEXP_IMAGE_URL, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		Matcher matcher = pattern.matcher(m_content);
+		boolean matchFound = matcher.find();
+
+		if (!matchFound || matcher.groupCount() < 1) {
+			// not found
+			return "";
+		}
+		
+		return matcher.group(1);
 	}
 }

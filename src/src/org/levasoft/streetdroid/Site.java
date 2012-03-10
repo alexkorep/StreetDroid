@@ -6,7 +6,7 @@ public class Site implements Comparable<Site> {
 	private String m_username = "";
 	private String m_password = "";
 	
-	Site(String url) {
+	public Site(String url) {
 		m_url = url;
 	}
 	

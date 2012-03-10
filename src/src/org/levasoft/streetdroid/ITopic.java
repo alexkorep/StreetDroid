@@ -22,4 +22,6 @@ public interface ITopic {
 	VotingDetails getVotingDetails();
 	
 	Site getSite();
+
+	String getFtontImageUrl();
 }

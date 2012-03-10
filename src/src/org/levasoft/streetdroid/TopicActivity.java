@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,11 +73,21 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback, I
         m_webview.getSettings().setJavaScriptEnabled(true);
         m_webview.getSettings().setBuiltInZoomControls(true);
 		m_webview.setWebViewClient(new WebViewClient() {
+			@Override
 			public void onPageFinished(WebView view, String url) {
 				if (m_downloadComplete) {
 					stopRotatingRefreshIcon();
 					m_webview.scrollTo(m_webviewScrollX, m_webviewScrollY);
 				}
+			}
+			
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			{
+				// Launch links in external browser
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				startActivity(intent);
+				return true;
 			}
 		});
         
@@ -122,8 +134,8 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback, I
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(Menu.NONE, MENU_ITEM_VOTE_UP, MENU_ITEM_VOTE_UP, R.string.topic_vote_up);
-        menu.add(Menu.NONE, MENU_ITEM_VOTE_DOWN, MENU_ITEM_VOTE_DOWN, R.string.topic_vote_down);
+    	//menu.add(Menu.NONE, MENU_ITEM_VOTE_UP, MENU_ITEM_VOTE_UP, R.string.topic_vote_up);
+        //menu.add(Menu.NONE, MENU_ITEM_VOTE_DOWN, MENU_ITEM_VOTE_DOWN, R.string.topic_vote_down);
         return super.onCreateOptionsMenu(menu);
     }
 

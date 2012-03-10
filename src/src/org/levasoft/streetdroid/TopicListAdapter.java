@@ -3,6 +3,7 @@ package org.levasoft.streetdroid;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.levasoft.streetdroid.imageloader.ImageLoader;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -133,9 +134,11 @@ class TopicListItemTitle implements ITopicListItem {
 class TopicListItemTopic implements ITopicListItem {
 
 	private final ITopic m_topic;
+	private final ImageLoader m_imageLoader;
 
-	TopicListItemTopic(ITopic topics) {
+	TopicListItemTopic(ITopic topics, Context context) {
 		m_topic = topics;
+		m_imageLoader = new ImageLoader(context);
 	}
 	
 	@Override
@@ -151,9 +154,12 @@ class TopicListItemTopic implements ITopicListItem {
         final String details = m_topic.getAuthor() + " " + m_topic.getDateTime();
         detailsView.setText(details);
 
-        // TODO add image
-        //ImageView imageView = (ImageView) rowView.findViewById(R.id.site_icon);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.topic_list_topic_image);
         //imageView.setImageResource(R.drawable.no);
+        final String url = m_topic.getFtontImageUrl();
+        if (url.length() != 0) {
+        	m_imageLoader.DisplayImage(url, imageView);
+        }
         
         return rowView;
 	}
@@ -165,8 +171,6 @@ class TopicListItemTopic implements ITopicListItem {
 
 	@Override
 	public void updateRotatingRefreshIcon() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
@@ -185,7 +189,7 @@ public class TopicListAdapter extends ArrayAdapter<ITopicListItem> {
     	
     	items.add(new TopicListItemTitle(activity));
     	for (int i = 0; i < topics.length; i++) {
-    		items.add(new TopicListItemTopic(topics[i]));
+    		items.add(new TopicListItemTopic(topics[i], activity));
     	}
     	return items.toArray(new ITopicListItem[0]);
     }

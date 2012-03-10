@@ -52,15 +52,6 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 				return "Error loading topic (invalid formatting?)";
 			}
 			
-			/*
-			TagNode titleNode = getSingleElement(topicNode, "title");
-			if (null != titleNode) {
-				String title = titleNode.getText().toString();
-				m_topic.setTitle(title);
-			}
-			*/
-			
-			
 			TagNode contentNode = getSingleElement(topicNode, "content"); 
 			if (null != contentNode) {
 				String content = serializer.getAsString(contentNode, "UTF-8", true);

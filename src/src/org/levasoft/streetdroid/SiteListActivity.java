@@ -3,6 +3,8 @@ package org.levasoft.streetdroid;
   
 import java.util.ArrayList;
 
+import org.levasoft.streetdroid.imageloader.ImageLoader;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;  
 import android.content.DialogInterface;
@@ -39,15 +41,21 @@ public class SiteListActivity extends ListActivity {
 					ContextMenuInfo arg2) {
                 //conMenu.setHeaderTitle("ContextMenu");
                 conMenu.add(0, ITEM_CONTEXTMENU_DELETEITEM, ITEM_CONTEXTMENU_DELETEITEM, "Удалить");
-                conMenu.add(0, ITEM_CONTEXTMENU_SITECONFIG, ITEM_CONTEXTMENU_SITECONFIG, R.string.menu_popup_site_config);
-                /* Add as many context-menu-options as you want to. */
+                //conMenu.add(0, ITEM_CONTEXTMENU_SITECONFIG, ITEM_CONTEXTMENU_SITECONFIG, R.string.menu_popup_site_config);
 			}
         });
         
         if (PreferencesProvider.INSTANCE.getSites().length == 0) {
         	addNewSiteDialog();
         }
-    }  
+    }
+    
+    @Override  
+    protected void onDestroy () {
+    	// Clear images cache
+    	new ImageLoader(this).clearCache(); 
+    	super.onDestroy();
+    }
 
     private void reloadSiteList() {
         m_adapter = new SiteListAdapter(this);

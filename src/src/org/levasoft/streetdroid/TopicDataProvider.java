@@ -58,7 +58,10 @@ public class TopicDataProvider {
 			m_topics.put(topic.getTopicUrl(), topic);
 			completeTopic = topic;
 		} else {
-			completeTopic.setContent(topic.getContent());
+			if (topic.getContent().length() != 0) {
+				completeTopic.setContent(topic.getContent());
+			}
+			
 			completeTopic.setAuthor(topic.getAuthor());
 			completeTopic.setBlog(topic.getBlog(), topic.getBlogUrl());
 			completeTopic.setComments(topic.getComments());
