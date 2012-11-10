@@ -134,8 +134,8 @@ public class TopicActivity extends Activity implements ITopicDownloadCallback, I
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	//menu.add(Menu.NONE, MENU_ITEM_VOTE_UP, MENU_ITEM_VOTE_UP, R.string.topic_vote_up);
-        //menu.add(Menu.NONE, MENU_ITEM_VOTE_DOWN, MENU_ITEM_VOTE_DOWN, R.string.topic_vote_down);
+    	menu.add(Menu.NONE, MENU_ITEM_VOTE_UP, MENU_ITEM_VOTE_UP, R.string.topic_vote_up);
+        menu.add(Menu.NONE, MENU_ITEM_VOTE_DOWN, MENU_ITEM_VOTE_DOWN, R.string.topic_vote_down);
         return super.onCreateOptionsMenu(menu);
     }
 

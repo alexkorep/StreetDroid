@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import org.levasoft.streetdroid.ITopic;
 import org.levasoft.streetdroid.PageDownloadManager;
 
+import android.util.Log;
+
 public class LiveStreetVersion35 implements ILiveStreetVersion {
 
 	private static final String VOTE_TOPIC_URL = "http://%s/include/ajax/voteTopic.php?JsHttpRequest=0-xml";
@@ -25,6 +27,7 @@ public class LiveStreetVersion35 implements ILiveStreetVersion {
 
 	@Override
 	public HttpResponse doTopicVoteReqest(int vote, ITopic topic) throws ClientProtocolException, IOException {
+	    Log.d("StreetDroid", "Security Key = " + topic.getVotingDetails().getVotingLSSecureKey());
 		final String url = String.format(VOTE_TOPIC_URL, topic.getSite().getUrl());
 		HttpPost httpPost = new HttpPost(url);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);

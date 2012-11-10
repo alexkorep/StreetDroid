@@ -10,9 +10,9 @@ class TopicStatus {
 	private TopicStatus() {
 	}
 	
-	public static final TopicStatus STATUS_INITIAL 		= new TopicStatus(); // Initial status after object creation
+	public static final TopicStatus STATUS_INITIAL 		= new TopicStatus();	// Initial status after object creation
 	public static final TopicStatus STATUS_BRIEF 		= new TopicStatus();	// Contains information from RSS (title, author, brief text)
-	public static final TopicStatus STATUS_DOWNLOADING 	= new TopicStatus(); // Full topic downloading is in progress
+	public static final TopicStatus STATUS_DOWNLOADING 	= new TopicStatus();	// Full topic downloading is in progress
 	public static final TopicStatus STATUS_COMPLETE 	= new TopicStatus();	// Full topic download complete
 }
 

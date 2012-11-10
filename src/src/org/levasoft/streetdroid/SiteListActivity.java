@@ -41,7 +41,7 @@ public class SiteListActivity extends ListActivity {
 					ContextMenuInfo arg2) {
                 //conMenu.setHeaderTitle("ContextMenu");
                 conMenu.add(0, ITEM_CONTEXTMENU_DELETEITEM, ITEM_CONTEXTMENU_DELETEITEM, "Удалить");
-                //conMenu.add(0, ITEM_CONTEXTMENU_SITECONFIG, ITEM_CONTEXTMENU_SITECONFIG, R.string.menu_popup_site_config);
+                conMenu.add(0, ITEM_CONTEXTMENU_SITECONFIG, ITEM_CONTEXTMENU_SITECONFIG, R.string.menu_popup_site_config);
 			}
         });
         

@@ -53,20 +53,17 @@ public class TopicDataProvider {
 
 	public void onDownloadComplete(Topic topic) {
 		topic.setStatus(TopicStatus.STATUS_COMPLETE);
-		Topic completeTopic = m_topics.get(topic.getTopicUrl());
-		if (completeTopic == null) {
-			m_topics.put(topic.getTopicUrl(), topic);
-			completeTopic = topic;
-		} else {
-			if (topic.getContent().length() != 0) {
-				completeTopic.setContent(topic.getContent());
-			}
-			
-			completeTopic.setAuthor(topic.getAuthor());
-			completeTopic.setBlog(topic.getBlog(), topic.getBlogUrl());
-			completeTopic.setComments(topic.getComments());
-		}
-		m_topicDownloadCallback.onTopicDownloadComplete(completeTopic);
+		Topic oldTopic = m_topics.get(topic.getTopicUrl());
+		
+		// Update fields of just downloaded topic with fields of topic got from RSS
+		if (topic.getAuthor().length() == 0) topic.setAuthor(oldTopic.getAuthor());
+		if (topic.getContent().length() == 0) topic.setContent(oldTopic.getContent());
+		if (topic.getTitle().length() == 0) topic.setTitle(oldTopic.getTitle());
+
+		// Put the new topic into the container
+		m_topics.put(topic.getTopicUrl(), topic);
+		
+		m_topicDownloadCallback.onTopicDownloadComplete(topic);
 	}
 
 

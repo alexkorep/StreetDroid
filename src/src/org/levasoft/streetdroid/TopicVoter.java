@@ -36,7 +36,6 @@ public class TopicVoter extends AsyncTask<Integer, Integer, String> {
 	private static String LOGIN_URL = "http://%s/login";
 
 	
-	//public static Voter INSTANCE = new Voter();
 	private static ILiveStreetVersion[] m_versions = {
 		new LiveStreetVersion35(),
 		new LiveStreetVersion40()
@@ -118,7 +117,7 @@ public class TopicVoter extends AsyncTask<Integer, Integer, String> {
 		for (int i = 0; i < m_versions.length; i++) {
 			response = m_versions[i].doTopicVoteReqest(vote, topic);
 		    StatusLine statusLine = response.getStatusLine();
-		    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+		    if (statusLine.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
 		    	version = m_versions[i];
 		    	break;
 		    }
@@ -141,17 +140,22 @@ public class TopicVoter extends AsyncTask<Integer, Integer, String> {
 	protected String doInBackground(Integer... arg0) {
 		try {
 			login(m_topic.getSite());
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (StreetDroidException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
 			return doTopicVoteRequest(m_vote, m_topic);
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
-			return "Неизвестная ошибка";
-		} catch (StreetDroidException e) {
-			e.printStackTrace();
-			return "Неизвестная ошибка";
 		} catch (IOException e) {
 			e.printStackTrace();
-			return "Неизвестная ошибка";
 		}
+		return "Неизвестная ошибка";
 	}
 	
 	@Override
