@@ -40,7 +40,7 @@ public interface ITopic {
 	String getContent();
 
 	/**
-	 * Return topic publishing time in format used on HTML page.
+	 * Return topic publishing time in format defined by topic class implementation.
 	 */
 	String getDateTime();
 
