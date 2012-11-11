@@ -156,7 +156,7 @@ class TopicListItemTopic implements ITopicListItem {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.topic_list_topic_image);
         //imageView.setImageResource(R.drawable.no);
-        final String url = m_topic.getFtontImageUrl();
+        final String url = m_topic.getFrontImageUrl();
         if (url.length() != 0) {
         	m_imageLoader.DisplayImage(url, imageView);
         }

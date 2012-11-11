@@ -17,7 +17,7 @@ public class TopicTest extends TestCase {
 	public void testFrontUrl() {
 		Topic topic = new Topic("", new Site(""));
 		topic.setContent("a;sgjasdlg <img width=12 src=\"http://hello.com\" height=\"6\">");
-		final String url = topic.getFtontImageUrl();
+		final String url = topic.getFrontImageUrl();
 		assertEquals(url, "http://hello.com");
 	}
 }

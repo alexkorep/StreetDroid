@@ -1,7 +1,6 @@
 package org.levasoft.streetdroid;
 
 public class StreetDroidException extends Exception {
-
 	private final int m_messageId;
 
 	public StreetDroidException(int messageId) {
