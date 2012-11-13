@@ -16,24 +16,39 @@ import org.levasoft.streetdroid.rss.Message;
 
 import android.os.AsyncTask;
 
+/**
+ * Downloads topic text from topic HTML page and topic comments from comments RSS.
+ *
+ */
 public class TopicDownloader extends AsyncTask<String, Integer, String> {
 
 	private static final String RSS_URL = "http://%s/rss/comments/%s/";
 
-	private final TopicDataProvider m_dataProvider;
-	private Topic m_topic;
-	private String m_filename = "";
+	// We call its method when downloading is complete.
+	// TODO introduce an interface implemented by data provider, use it instead.
+	private final TopicDataProvider m_dataProvider; 
+	
+	private Topic m_topic;			// Topic object
+	private String m_filename = ""; // Topic URL to be used for downloading 
 
 	public TopicDownloader(TopicDataProvider dataProvider) {
 		m_dataProvider = dataProvider;
 	}
 
+	/**
+	 * Downloads topic context. Doesn't block current thread, launches
+	 * a new download thread which calls TopicDataProvider.onDownloadComplete when it's done.
+	 * @param site - site this topic belongs to
+	 * @param topicUrl - topic URL
+	 */
 	public void download(Site site, String topicUrl) {
 		m_topic = new Topic(topicUrl, site);
-		//String url = String.format(TOPIC_URL, SITE_URL , topicUrl);
 		execute(topicUrl);
 	}
 
+	/**
+	 * Method to be executed in the worker thread.
+	 */
 	@Override
 	protected String doInBackground(String... arg0) {
 		try {
@@ -43,7 +58,6 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 			m_filename  = arg0[0];
 			
 			final String page = PageDownloadManager.INSTANCE.download(m_filename);
-			//final TagNode node = cleaner.clean(new URL(m_filename));
 			final TagNode node = cleaner.clean(page);
 			
 			TagNode topicNode = getSingleElement(node, "topic");
@@ -86,25 +100,24 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		//
 		TagNode commentsNode = getSingleElement(node, "comments");
 		if (commentsNode == null) {
-			// Throw some error
+			// TODO Throw some error
 			// Error loading comments (invalid formatting?)
 		}
 
-		// Gets list of comment tags
-		//TagNode[] nodes = commentsNode.getElementsByAttValue("class", "comment", false, false);
-		//TagNode[] nodes = commentsNode.getChildTags();
-		//TagNode[] nodes = commentsNode.getElementsByAttValue("class", "comment", true, false);
-		//commentsNode.
-
 		ArrayList<Comment> comments = new ArrayList<Comment>();
 		
-		//parseCommentNodes(nodes, serializer, 0, comments);
 		parseCommentsFromRss(comments);
 		adjustCommentLevels(comments, commentsNode);
 		
 		m_topic.setComments(comments.toArray(new IComment[0]));
 	}
 
+	/**
+	 * Since RSS doesn't contain comment level information, we need to extract that
+	 * data from HTML and merge with RSS data.
+	 * @param comments
+	 * @param commentsNode
+	 */
 	private void adjustCommentLevels(ArrayList<Comment> comments,
 			TagNode commentsNode) {
 		
@@ -152,6 +165,10 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		return level;
 	}
 
+	/**
+	 * Parses comments from RSS
+	 * @param o_comments
+	 */
 	private void parseCommentsFromRss(ArrayList<Comment> o_comments) {
 		URL url;
 		try {
@@ -189,75 +206,6 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		}
 	}
 
-	/**
-	 * Recursively parses comments from the given node list
-	 * @param commentNodes comments nodes
-	 * @param serializer
-	 * @param level 
-	 * @param o_comments output array of comments
-	 */
-	/*
-	private void parseCommentNodes(TagNode[] commentNodes,
-			SimpleHtmlSerializer serializer, int level, ArrayList<IComment> o_comments) {
-		
-		if (commentNodes == null) {
-			// no child comment for this section?
-			return;
-		}
-
-		
-		//IComment[] comments = new IComment[nodes.length];
-		for (int i = 0; i < commentNodes.length; ++i) {
-			TagNode commentNode = commentNodes[i];
-			if (commentNode == null) {
-				continue;
-			}
-			
-			final String commentId = commentNode.getAttributeByName("id");
-			if (commentId == null) {
-				continue;
-			}
-			
-			Comment comment = new Comment(commentId);
-			comment.setLevel(level);
-			
-			TagNode authorNode = getSingleElement(commentNode, "author");
-			if (null != authorNode) {
-				final String author = authorNode.getText().toString();
-				comment.setAuthor(author);
-				comment.setAuthorUrl(authorNode.getAttributeByName("href"));
-			}
-			
-			TagNode dateNode = getSingleElement(commentNode, "date");
-			if (null != dateNode) {
-				comment.setDateTime(dateNode.getText().toString());
-			}
-			
-			
-			TagNode textNode = getSingleElement(commentNode, "text"); 
-			if (null != textNode) {
-				String text = "";
-				try {
-					text = serializer.getAsString(textNode, "UTF-8", true);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				comment.setText(text);
-			}
-			
-			o_comments.add(comment);
-			
-			// Add child comments
-			TagNode childrenNode = getSingleElement(commentNode, "comment-children");
-			if (childrenNode != null) {
-				TagNode[] childNodes = childrenNode.getElementsByAttValue("class", "comment", false, false);
-				parseCommentNodes(childNodes, serializer, level + 1, o_comments);
-			}
-		}
-		
-	}
-	*/
-
 	private TagNode getSingleElement(TagNode node, String elementClass) {
 		TagNode[] nodes = node.getElementsByAttValue("class", elementClass, true, false);
 		if (null == nodes || nodes.length == 0 || null == nodes[0]) {
@@ -269,13 +217,18 @@ public class TopicDownloader extends AsyncTask<String, Integer, String> {
 		return resultNode;
 	}
 
+	/**
+	 * Method to be called when worker thread is done.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		m_dataProvider.onDownloadComplete(m_topic);
 	}	
 
+	/**
+	 * Not used: we don't report downloading progress to user.
+	 */
 	@Override
-	 protected void onProgressUpdate(Integer... progress) {
-		//onDownloadProgress(progress[0]);
-     }
+	protected void onProgressUpdate(Integer... progress) {
+	}
 }

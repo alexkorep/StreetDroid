@@ -2,6 +2,8 @@ package org.levasoft.streetdroid;
 
 /**
  * Topic interface.
+ * Topic is an article published on HTML page of LiveStreet website.
+ * It has author, publishing date, title, content and comments.
  *
  */
 public interface ITopic {

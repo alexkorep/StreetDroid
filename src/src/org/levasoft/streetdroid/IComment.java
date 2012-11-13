@@ -34,7 +34,7 @@ public interface IComment {
 	public int getLevel();
 	
 	/**
-	 * Returns comment date and time in format as it was displayed on topic HTML text.
+	 * Returns comment date and time in format as it should be displayed for output.
 	 */
 	public String getDateTime();
 }

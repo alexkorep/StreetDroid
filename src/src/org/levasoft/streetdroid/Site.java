@@ -1,10 +1,16 @@
 package org.levasoft.streetdroid;
 
+/**
+ * Class containing site information.
+ * It's a simple storage class without business logic implementing only getters and setters.
+ * Only exception is getId method which returns site URL hash code.
+ *
+ */
 public class Site implements Comparable<Site> {
-	private final String m_url;
-	private String m_title = "";
-	private String m_username = "";
-	private String m_password = "";
+	private final String m_url;			// Site URL, e.g. "example.com"
+	private String m_title = "";		// Site title
+	private String m_username = "";		// Username to login to the site
+	private String m_password = "";		// Password to login to the site.
 	
 	public Site(String url) {
 		m_url = url;

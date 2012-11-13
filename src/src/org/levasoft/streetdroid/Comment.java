@@ -1,13 +1,19 @@
 package org.levasoft.streetdroid;
 
+/**
+ * Class representing the comment for a topic.
+ * Used only for storing comment information, doesn't contain any business logic, 
+ * has only getters and setters.
+ *
+ */
 public class Comment implements IComment {
 
-	private final String m_commentId;
-	private String m_author = "";
-	private String m_text = "";
-	private String m_authorUrl = "";
-	private int m_level = 0;
-	private String m_dateTime = "";
+	private final String m_commentId;	// Comment ID as it used on topic page, e.g. "comment123"
+	private String m_author = "";		// Comment author username
+	private String m_text = "";			// Comment text
+	private String m_authorUrl = "";	// Comment author URL, e.g. "http://example.com/profile/username/"
+	private int m_level = 0;			// Comment level. 0 for top-level comments, 1 for 2nd level, etc.
+	private String m_dateTime = "";		// Comment publishing date and time, already formatted.
 
 	public Comment(String commentId) {
 		m_commentId = commentId;

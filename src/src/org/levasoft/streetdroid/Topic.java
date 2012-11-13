@@ -7,8 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class indicating the topic download status
- *
+ * Class indicating the topic download status.
+ * Topic could be downloaded from 2 different locations:
+ * - From RSS article record. RSS record contains information only about topic title, brief content and author.
+ * - From full topic HTML page. Topic title, author, publishing date, content and comments are parsed from that HTML page. 
  */
 class TopicStatus {
 	private TopicStatus() {
@@ -16,7 +18,7 @@ class TopicStatus {
 	
 	public static final TopicStatus STATUS_INITIAL 		= new TopicStatus();	// Initial status after object creation
 	public static final TopicStatus STATUS_BRIEF 		= new TopicStatus();	// Contains information from RSS (title, author, brief text)
-	public static final TopicStatus STATUS_DOWNLOADING 	= new TopicStatus();	// Full topic downloading is in progress
+	public static final TopicStatus STATUS_DOWNLOADING 	= new TopicStatus();	// Full topic is being downloading from HTML page
 	public static final TopicStatus STATUS_COMPLETE 	= new TopicStatus();	// Full topic download complete
 }
 
@@ -33,18 +35,19 @@ public class Topic implements ITopic, Comparable<Topic> {
 	private String m_blog = "";		// Name of the blog this topic is published in
 	private String m_blogUrl = "";	// Topic blog URL
 	private String m_content = "";	// Topic HTML content
-	private Date m_dateTime = new Date(1980, 01, 01);	// Topic publish date
-	private TopicStatus m_status = TopicStatus.STATUS_INITIAL;
-	private final String m_topicUrl;
-	private IComment[] m_comments = new IComment[0];
+	private Date m_dateTime = new Date(1980, 01, 01);			// Topic publish date
+	private TopicStatus m_status = TopicStatus.STATUS_INITIAL;	// Topic download status
+	private final String m_topicUrl;							// Topic HTML page URL
+	private IComment[] m_comments = new IComment[0];			// Comments to the topic
 	
-	private VotingDetails m_votingDetails = new VotingDetails();
-	private final Site m_site;
+	private VotingDetails m_votingDetails = new VotingDetails();	// Information needed to vote for topic
+	private final Site m_site;										// Website where the topic is published
 	
-	// Formatter to format topic date/time
+	// Formatter to format topic publishing date/time
+	// Russian date/time format is used here
 	private static SimpleDateFormat RU_FORMATTER = 
 			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", new Locale("ru"));
-	
+
 	/**
 	 * Constructor
 	 * @param topicUrl - topic URL, e.g.

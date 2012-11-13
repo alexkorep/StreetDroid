@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 /**
  * This class is used to extract information needed for voting for the topic from the 
  * page HTML.
- * @author alexey
  *
  */
 public class VotingDetails {
